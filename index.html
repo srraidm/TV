@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SrRaid TVULTRA | Elite Hub</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff4757;
+            --anime-cyan: #00d2ff;
+            --bg: #050505;
+            --card: #111;
+            --text: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: #000;
+            padding: 20px;
+            border-bottom: 3px solid var(--primary);
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(255, 71, 87, 0.3);
+        }
+
+        .brand {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            letter-spacing: 3px;
+        }
+
+        .brand span { color: var(--primary); }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .nav-btn {
+            padding: 10px 25px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .nav-btn.active { background: var(--primary); border-color: var(--primary); box-shadow: 0 0 10px var(--primary); }
+        .nav-btn.anime-tab.active { background: var(--anime-cyan); border-color: var(--anime-cyan); box-shadow: 0 0 10px var(--anime-cyan); }
+
+        .container { max-width: 1200px; margin: 15px auto; padding: 0 15px; }
+
+        .player-viewport {
+            width: 100%;
+            background: #000;
+            aspect-ratio: 16/9;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #222;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        iframe, video { width: 100%; height: 100%; border: none; }
+
+        .anime-panel {
+            background: #151515;
+            padding: 15px;
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            border: 1px solid #222;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .anime-panel.active { display: flex; }
+
+        .server-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; }
+        
+        .btn-s {
+            padding: 6px 10px;
+            background: #222;
+            border: 1px solid #444;
+            color: white;
+            cursor: pointer;
+            font-size: 0.65rem;
+            font-weight: bold;
+            border-radius: 3px;
+            transition: 0.2s;
+        }
+
+        .btn-s:hover { background: #333; }
+        .btn-s.active { background: var(--anime-cyan); border-color: var(--anime-cyan); color: #000; }
+
+        .section { display: none; padding-top: 20px; animation: fadeIn 0.5s; }
+        .section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .cat-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            margin: 35px 0 15px;
+            color: var(--primary);
+            border-left: 5px solid var(--primary);
+            padding-left: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 25px 10px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid #222;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover { transform: translateY(-5px); border-color: var(--primary); background: #1a1a1a; }
+        .card i { font-size: 2.2rem; margin-bottom: 12px; display: block; color: var(--primary); transition: 0.3s; }
+        .card:hover i { transform: scale(1.1); color: #fff; }
+        .card span { font-weight: bold; font-size: 0.85rem; display: block; }
+
+        .anime-card { padding: 0; border-radius: 8px; }
+        .anime-card img { width: 100%; height: 220px; object-fit: cover; display: block; }
+        .anime-info { padding: 10px; background: rgba(0,0,0,0.8); }
+
+        .search-bar { 
+            width: 100%; 
+            max-width: 600px; 
+            margin: 0 auto 25px; 
+            display: block; 
+            padding: 15px 25px; 
+            border-radius: 30px; 
+            background: #111; 
+            color: white; 
+            border: 2px solid #333; 
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .search-bar:focus { border-color: var(--anime-cyan); box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="brand">SrRaid <span>TVULTRA</span></div>
+    <nav>
+        <button class="nav-btn active" onclick="show('tv', this)">TV & DEPORTES</button>
+        <button class="nav-btn anime-tab" onclick="show('anime', this)">SrRaid ANIME</button>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="player-viewport">
+        <video id="tv-video" controls autoplay></video>
+        <iframe id="anime-iframe" style="display:none" allowfullscreen></iframe>
+    </div>
+
+    <div class="anime-panel" id="a-panel">
+        <div class="server-row">
+            <span style="font-size:0.7rem; font-weight: bold; color:var(--anime-cyan)">MIRRORS:</span>
+            <button class="btn-s active" onclick="setS('Vidsrc', this)">VIDSRC</button>
+            <button class="btn-s" onclick="setS('SuperEmbed', this)">SUPER-E</button>
+            <button class="btn-s" onclick="setS('Netu', this)">NETU</button>
+            <button class="btn-s" onclick="setS('EmbedSu', this)">EMBED.SU</button>
+            <button class="btn-s" onclick="setS('FileMoon', this)">FILEMOON</button>
+            <button class="btn-s" onclick="setS('Vidhide', this)">VIDHIDE</button>
+            <button class="btn-s" onclick="setS('Mixdrop', this)">MIXDROP</button>
+        </div>
+        <div style="display:flex; justify-content: space-between; align-items: center; padding: 0 10px;">
+            <button class="btn-s" style="padding: 8px 15px" onclick="chEp(-1)"><i class="fas fa-chevron-left"></i> ANTERIOR</button>
+            <span id="ep-info" style="font-weight:800; color:var(--anime-cyan); font-family: 'Orbitron'; font-size: 0.9rem;">EPISODIO 1</span>
+            <button class="btn-s" style="padding: 8px 15px" onclick="chEp(1)">SIGUIENTE <i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <div id="tv-section" class="section active">
+        <div class="cat-title"><i class="fas fa-futbol"></i> DEPORTES PREMIUM</div>
+        <div class="grid" id="grid-dep"></div>
+        
+        <div class="cat-title"><i class="fas fa-tv"></i> CANALES NACIONALES</div>
+        <div class="grid" id="grid-chi"></div>
+        
+        <div class="cat-title"><i class="fas fa-broadcast-tower"></i> NOTICIAS & CABLE</div>
+        <div class="grid" id="grid-cab"></div>
+    </div>
+
+    <div id="anime-section" class="section">
+        <input type="text" class="search-bar" id="a-search" placeholder="Escribe el nombre del anime y pulsa Enter..." onkeyup="if(event.key==='Enter') searchA()">
+        <div class="grid" id="grid-a"></div>
+    </div>
+</div>
+
+<script>
+    const tvDB = {
+        dep: [
+            { n: "TNT Sports HD", u: "https://rudo.video/live/tntsports?ext=m3u8", i: "fa-futbol" },
+            { n: "CDO Premium", u: "https://rudo.video/live/cdo?ext=m3u8", i: "fa-trophy" },
+            { n: "Teletrak", u: "https://rudo.video/live/teletrak?ext=m3u8", i: "fa-horse" },
+            { n: "Zapping Sports", u: "https://rudo.video/live/zappingsports?ext=m3u8", i: "fa-bolt" }
+        ],
+        chi: [
+            { n: "Canal 13 HD", u: "https://rudo.video/live/c13?ext=m3u8", i: "fa-tv" },
+            { n: "Mega HD", u: "https://rudo.video/live/megatv?ext=m3u8", i: "fa-tv" },
+            { n: "Chilevisión", u: "https://rudo.video/live/chv?ext=m3u8", i: "fa-tv" },
+            { n: "TVN HD", u: "https://rudo.video/live/tvn?ext=m3u8", i: "fa-tv" },
+            { n: "La Red", u: "https://rudo.video/live/lared?ext=m3u8", i: "fa-tv" },
+            { n: "TV Mas", u: "https://rudo.video/live/tvmas?ext=m3u8", i: "fa-tv" }
+        ],
+        cab: [
+            { n: "T13 En Vivo", u: "https://rudo.video/live/t13?ext=m3u8", i: "fa-newspaper" },
+            { n: "24 Horas", u: "https://rudo.video/live/24horas?ext=m3u8", i: "fa-clock" },
+            { n: "Meganoticias", u: "https://rudo.video/live/mnoticias?ext=m3u8", i: "fa-bolt-lightning" },
+            { n: "CNN Chile", u: "https://rudo.video/live/cnnchile?ext=m3u8", i: "fa-globe" },
+            { n: "Bio Bio TV", u: "https://rudo.video/live/bbtv?ext=m3u8", i: "fa-microphone" }
+        ]
+    };
+
+    let curA = "", curE = 1, curS = "Vidsrc";
+    const vid = document.getElementById('tv-video');
+    const ifr = document.getElementById('anime-iframe');
+    const pan = document.getElementById('a-panel');
+    let hls = new Hls();
+
+    function show(id, b) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
+        document.getElementById(id + '-section').classList.add('active');
+        b.classList.add('active');
+        if(id==='tv') { pan.classList.remove('active'); ifr.style.display='none'; vid.style.display='block'; }
+    }
+
+    function loadTV() {
+        const draw = (id, l) => {
+            const g = document.getElementById(id);
+            l.forEach(c => g.innerHTML += `<div class="card" onclick="playTV('${c.u}')"><i class="fas ${c.i}"></i><span>${c.n}</span></div>`);
+        }
+        draw('grid-dep', tvDB.dep); draw('grid-chi', tvDB.chi); draw('grid-cab', tvDB.cab);
+    }
+
+    function playTV(u) {
+        ifr.style.display = 'none'; vid.style.display = 'block';
+        if (Hls.isSupported()) { hls.destroy(); hls = new Hls(); hls.loadSource(u); hls.attachMedia(vid); hls.on(Hls.Events.MANIFEST_PARSED, () => vid.play()); }
+        else { vid.src = u; vid.play(); }
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    async function searchA() {
+        const q = document.getElementById('a-search').value;
+        const g = document.getElementById('grid-a');
+        g.innerHTML = "<div style='grid-column: 1/-1; text-align:center'>Buscando en SrRaid Anime Database...</div>";
+        try {
+            const r = await fetch(`https://api.jikan.moe/v4/anime?q=${q}&limit=18`);
+            const { data } = await r.json();
+            g.innerHTML = "";
+            data.forEach(a => {
+                g.innerHTML += `
+                <div class="card anime-card" onclick="initA('${a.title}')">
+                    <img src="${a.images.jpg.image_url}">
+                    <div class="anime-info"><span>${a.title}</span></div>
+                </div>`;
+            });
+        } catch(e) { g.innerHTML = "Error al conectar con la API."; }
+    }
+
+    function initA(t) { curA = t; curE = 1; loadA(); }
+
+    function loadA() {
+        vid.style.display = 'none'; ifr.style.display = 'block';
+        pan.classList.add('active');
+        document.getElementById('ep-info').innerText = "EPISODIO " + curE;
+        
+        let slug = curA.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+        
+        // MOTOR DE REPRODUCTORES EXPANDIDO
+        if(curS === 'Vidsrc') ifr.src = `https://vidsrc.me/embed/anime?last_name=${slug}&ep=${curE}`;
+        else if(curS === 'SuperEmbed') ifr.src = `https://multiembed.mov/?video_id=${slug}&s=${curE}`;
+        else if(curS === 'Netu') ifr.src = `https://waaw.to/search.php?q=${slug}+ep+${curE}`;
+        else if(curS === 'EmbedSu') ifr.src = `https://embed.su/embed/anime/${slug}/${curE}`;
+        else if(curS === 'FileMoon') ifr.src = `https://filemoon.sx/e/${slug}`;
+        else if(curS === 'Vidhide') ifr.src = `https://vidhide.com/v/${slug}`;
+        else if(curS === 'Mixdrop') ifr.src = `https://mixdrop.co/s/${slug}`;
+        
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    function chEp(v) { curE += v; if(curE<1) curE=1; loadA(); }
+    function setS(s, b) { 
+        curS = s; 
+        document.querySelectorAll('.btn-s').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        loadA(); 
+    }
+
+    loadTV();
+    playTV(tvDB.dep[0].u);
+</script>
+</body>
+</html>
