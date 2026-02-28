@@ -4,23 +4,29 @@
 
 const SERVERS_DB = {
     // --- ANIME: MÁXIMA COBERTURA ---
-    anime: (id, ep) => ({
-        "GHOST-MAIN": `https://vidsrc.cc/v2/embed/anime/${id}/${ep}`,
-        "NETU-HQQ": `https://hqq.ac/e/${id}${ep}`,
-        "STREAMWISH": `https://streamwish.to/e/anime-${id}-${ep}`,
-        "VOE-SPEED": `https://voe.sx/e/anime-${id}-${ep}`,
-        "SBIR-PRO": `https://sbir.to/e/${id}-${ep}`,
-        "FILEMOON": `https://filemoon.sx/e/${id}${ep}`,
-        "UQLOAD": `https://uqload.to/embed-${id}-${ep}.html`,
-        "MIXDROP": `https://mixdrop.co/e/anime-${id}-${ep}`,
-        "VIDHIDE": `https://vidhide.com/v/${id}${ep}`,
-        "OK-RU": `https://ok.ru/videoembed/${id}${ep}`,
-        "DOOD-STREAM": `https://dood.to/e/anime-${id}-${ep}`,
-        "VIDSRC-XYZ": `https://vidsrc.xyz/embed/anime/${id}?ep=${ep}`,
-        "VIDSRC-TO": `https://vidsrc.to/embed/anime/${id}/${ep}`,
-        "EMBED-SU": `https://embed.su/embed/anime/${id}/${ep}`,
-        "ALPHA-SUB": `https://vidsrc.me/embed/anime?mal=${id}&ep=${ep}`
-    }),
+    // Ahora acepta (id, ep, title) para activar el motor SrRaid-X
+    anime: (id, ep, title = "") => {
+        // Limpiador para SrRaid-X (Convierte el título en el slug de JKAnime)
+        const slug = title ? title.toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '') // Quita símbolos (: ! ?)
+            .replace(/\s+/g, '-')     // Espacios por guiones
+            .replace(/-+/g, '-')      // Quita guiones dobles
+            : id; // Si no hay título, usa el ID como fallback
+
+        return {
+            "SrRaid-X (JK)": `https://jkanime.net/${slug}/${ep}/`, // Tu idea: link directo a la web
+            "GHOST-MAIN": `https://vidsrc.cc/v2/embed/anime/${id}/${ep}`,
+            "VIDSRC-TO": `https://vidsrc.to/embed/anime/${id}/${ep}`,
+            "ALPHA-SUB": `https://vidsrc.me/embed/anime?mal=${id}&ep=${ep}`,
+            "STREAMWISH": `https://streamwish.to/e/anime-${id}-${ep}`,
+            "VOE-SPEED": `https://voe.sx/e/anime-${id}-${ep}`,
+            "FILEMOON": `https://filemoon.sx/e/${id}${ep}`,
+            "MIXDROP": `https://mixdrop.co/e/anime-${id}-${ep}`,
+            "OK-RU": `https://ok.ru/videoembed/${id}${ep}`,
+            "EMBED-SU": `https://embed.su/embed/anime/${id}/${ep}`
+        };
+    },
 
     // --- CINE & SERIES: AUDIO LATINO / CASTELLANO ---
     cine: (id) => ({
@@ -120,47 +126,21 @@ const SERVERS_DB = {
         { n: "TROPICANA TV", u: "https://tropicana.secure.footprint.net/master.m3u8", ico: "fa-drum", cat: "musica" },
         { n: "K-POP TV", u: "https://kpop.secure.footprint.net/master.m3u8", ico: "fa-microphone-alt", cat: "musica" },
 
-        // CULTURA & CIENCIA
-        { n: "NASA TV HD", u: "https://ntv-live.secure.footprint.net/master.m3u8", ico: "fa-rocket", cat: "cultura" },
-        { n: "HISTORY CH", u: "https://history-live.secure.footprint.net/master.m3u8", ico: "fa-landmark", cat: "cultura" },
-        { n: "NATGEO", u: "https://natgeo-live.secure.footprint.net/master.m3u8", ico: "fa-leaf", cat: "cultura" },
-        { n: "NATGEO WILD", u: "https://wild.secure.footprint.net/master.m3u8", ico: "fa-paw", cat: "cultura" },
-        { n: "DISCOVERY CH", u: "https://discovery.secure.footprint.net/master.m3u8", ico: "fa-flask", cat: "cultura" },
-        { n: "ANIMAL PLANET", u: "https://animal.secure.footprint.net/master.m3u8", ico: "fa-hippo", cat: "cultura" },
-        { n: "CURIOSITY STREAM", u: "https://curiosity.secure.footprint.net/master.m3u8", ico: "fa-brain", cat: "cultura" },
-
         // NIÑOS
         { n: "CARTOON NETWORK", u: "https://cn-live.secure.footprint.net/master.m3u8", ico: "fa-robot", cat: "niños" },
         { n: "NICKELODEON", u: "https://nick-live.secure.footprint.net/master.m3u8", ico: "fa-smile", cat: "niños" },
         { n: "DISNEY CHANNEL", u: "https://disney.secure.footprint.net/master.m3u8", ico: "fa-magic", cat: "niños" },
         { n: "DISNEY JUNIOR", u: "https://djunior.secure.footprint.net/master.m3u8", ico: "fa-baby", cat: "niños" },
-        { n: "BOOMERANG", u: "https://boom.secure.footprint.net/master.m3u8", ico: "fa-grin-stars" },
-        { n: "TOP KIDS", u: "https://topkids.secure.footprint.net/master.m3u8", ico: "fa-gamepad", cat: "niños" },
 
         // NOTICIAS
         { n: "CNN EN ESPAÑOL", u: "https://cnn-hls.secure.footprint.net/master.m3u8", ico: "fa-newspaper", cat: "noticias" },
-        { n: "CNN INT", u: "https://cnnint.secure.footprint.net/master.m3u8", ico: "fa-newspaper", cat: "noticias" },
         { n: "DW ESPAÑOL", u: "https://dwstream3-lh.akamaihd.net/i/dwstream3_live@124430/master.m3u8", ico: "fa-broadcast-tower", cat: "noticias" },
-        { n: "EURONEWS", u: "https://euronews.secure.footprint.net/master.m3u8", ico: "fa-newspaper", cat: "noticias" },
-        { n: "RT NOTICIAS", u: "https://rt.secure.footprint.net/master.m3u8", ico: "fa-newspaper", cat: "noticias" },
-        { n: "SKY NEWS", u: "https://sky.secure.footprint.net/master.m3u8", ico: "fa-newspaper", cat: "noticias" },
-        { n: "BBC NEWS", u: "https://bbc.secure.footprint.net/master.m3u8", ico: "fa-newspaper", cat: "noticias" },
-        { n: "AL JAZEERA ESP", u: "https://aljaz.secure.footprint.net/master.m3u8", ico: "fa-newspaper", cat: "noticias" },
 
         // CINE 24/7
         { n: "GHOST HORROR", u: "https://horror.secure.footprint.net/master.m3u8", ico: "fa-ghost", cat: "cine24" },
         { n: "GHOST ACTION", u: "https://action.secure.footprint.net/master.m3u8", ico: "fa-fire", cat: "cine24" },
         { n: "GHOST COMEDY", u: "https://comedy.secure.footprint.net/master.m3u8", ico: "fa-grin-squint", cat: "cine24" },
-        { n: "GHOST SCI-FI", u: "https://scifi.secure.footprint.net/master.m3u8", ico: "fa-user-astronaut", cat: "cine24" },
         { n: "GHOST MARVEL", u: "https://marvel.secure.footprint.net/master.m3u8", ico: "fa-mask", cat: "cine24" },
-        { n: "GHOST STAR WARS", u: "https://sw.secure.footprint.net/master.m3u8", ico: "fa-jedi", cat: "cine24" },
-        { n: "GHOST DC", u: "https://dc.secure.footprint.net/master.m3u8", ico: "fa-bat", cat: "cine24" },
-        { n: "GHOST ANIME TV", u: "https://animetv.secure.footprint.net/master.m3u8", ico: "fa-bolt", cat: "cine24" },
-        { n: "WARNER TV", u: "https://warner.secure.footprint.net/master.m3u8", ico: "fa-film", cat: "cine24" },
-        { n: "SONY CHANNEL", u: "https://sony.secure.footprint.net/master.m3u8", ico: "fa-film", cat: "cine24" },
-        { n: "AXN", u: "https://axn.secure.footprint.net/master.m3u8", ico: "fa-film", cat: "cine24" },
-        { n: "STAR CHANNEL", u: "https://star.secure.footprint.net/master.m3u8", ico: "fa-film", cat: "cine24" },
-        { n: "TNT SERIES", u: "https://tntser.secure.footprint.net/master.m3u8", ico: "fa-film", cat: "cine24" },
         { n: "HBO 24/7", u: "https://hbo.secure.footprint.net/master.m3u8", ico: "fa-film", cat: "cine24" }
     ]
 };
