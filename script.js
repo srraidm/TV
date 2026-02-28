@@ -65,6 +65,8 @@ function renderTVGrid(filterText = "", category = "all") {
 function playTV(url) {
     const iframe = document.getElementById('media-iframe');
     const hlsPlayer = document.getElementById('hls-player');
+    
+    // Reset de contenedores
     iframe.style.display = 'none';
     iframe.src = "";
     document.getElementById('srv-list').innerHTML = ""; 
@@ -147,37 +149,48 @@ function loadMedia(id, type) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// --- RENDERIZADO DE SERVIDORES (SRRAID-X PRIMERO) ---
+// --- RENDERIZADO DE SERVIDORES (MODO LIMPIO) ---
 function renderServerButtons() {
     const container = document.getElementById('srv-list');
     const iframe = document.getElementById('media-iframe');
     container.innerHTML = "";
 
     let sources;
+    const animeTitle = document.getElementById('detail-title').innerText;
+    
     if (currentMode === 'anime') {
-        // Obtenemos el título real para alimentar a SrRaid-X en servers.js
-        const animeTitle = document.getElementById('detail-title').innerText;
         sources = SERVERS_DB.anime(currentId, currentEp, animeTitle);
     } else {
         sources = SERVERS_DB.cine(currentId);
     }
 
-    // El primer elemento en el objeto SERVERS_DB (que es SrRaid-X) se cargará primero
     Object.entries(sources).forEach(([name, url], index) => {
         const btn = document.createElement('button');
         btn.className = "btn-srv";
-        btn.innerHTML = name === "SrRaid-X (JK)" ? `<i class="fas fa-ghost"></i> ${name}` : name;
+        btn.innerHTML = name.includes("SrRaid-X") ? `<i class="fas fa-ghost"></i> ${name}` : name;
         
         btn.onclick = () => {
+            // Limpieza de buffer antes de cargar
             iframe.src = "about:blank"; 
-            setTimeout(() => { iframe.src = url; }, 100);
+            
+            // Si es SrRaid-X (JK), quitamos el scrolling para evitar ver la web de fondo
+            if(name.includes("SrRaid-X")) {
+                iframe.setAttribute('scrolling', 'no');
+            } else {
+                iframe.setAttribute('scrolling', 'yes');
+            }
+
+            setTimeout(() => { 
+                iframe.src = url; 
+            }, 100);
+
             document.querySelectorAll('.btn-srv').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         };
         
         container.appendChild(btn);
         
-        // Ejecución automática del primer servidor (SrRaid-X)
+        // Auto-ejecución del primer servidor (SrRaid-X por defecto)
         if (index === 0) {
             btn.classList.add('active');
             iframe.src = url;
@@ -205,7 +218,10 @@ async function openDetails(id) {
         const ep = document.createElement('div');
         ep.className = "ep-card";
         ep.innerText = i;
-        ep.onclick = () => { currentEp = i; loadMedia(id, 'anime'); };
+        ep.onclick = () => { 
+            currentEp = i; 
+            loadMedia(id, 'anime'); 
+        };
         epGrid.appendChild(ep);
     }
 }
