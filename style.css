@@ -1,6 +1,84 @@
-/* --- ACTUALIZACIÓN GHOST-PLAYER (Añadir al final de tu style.css) --- */
+/* =========================================
+   SRRAID TVGHOST - CORE STYLES
+   ========================================= */
 
-/* 1. Marco Pro para el Reproductor SrRaid-X */
+:root {
+    --primary: #ff0000;
+    --primary-glow: rgba(255, 0, 0, 0.6);
+    --bg-black: #020202;
+    --card-bg: #0a0a0a;
+    --text-dim: #888888;
+    --transition-ghost: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body { 
+    background: var(--bg-black); 
+    color: white; 
+    font-family: 'Inter', sans-serif; 
+    overflow-x: hidden; 
+    line-height: 1.6;
+}
+
+/* --- HEADER Y NAV --- */
+header { 
+    background: rgba(0,0,0,0.9); 
+    padding: 20px; 
+    position: sticky; 
+    top: 0; 
+    z-index: 2000; 
+    border-bottom: 2px solid var(--primary); 
+    text-align: center; 
+    backdrop-filter: blur(10px); 
+}
+
+.brand { 
+    font-family: 'Orbitron'; 
+    font-size: 2rem; 
+    letter-spacing: 4px; 
+    margin-bottom: 15px; 
+    text-transform: uppercase;
+}
+
+.brand span { 
+    color: var(--primary); 
+    text-shadow: 0 0 10px var(--primary); 
+}
+
+nav { 
+    display: flex; 
+    gap: 10px; 
+    justify-content: center; 
+}
+
+.nav-btn { 
+    background: #111; 
+    color: white; 
+    border: 1px solid #333; 
+    padding: 10px 20px; 
+    font-family: 'Orbitron'; 
+    font-size: 0.7rem; 
+    cursor: pointer; 
+    transition: 0.3s; 
+}
+
+.nav-btn.active { 
+    background: var(--primary); 
+    box-shadow: 0 0 15px var(--primary); 
+}
+
+/* --- REPRODUCTOR Y CONTENEDOR --- */
+.player-container { 
+    max-width: 1000px; 
+    margin: 20px auto; 
+    padding: 0 15px;
+}
+
 .player-wrapper {
     position: relative;
     width: 100%;
@@ -11,8 +89,9 @@
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }
 
-/* Efecto cuando el reproductor está activo */
-.player-wrapper:has(#media-iframe[src*="jkanime"]) {
+/* Efecto Glow cuando SrRaid-X está activo */
+.player-wrapper:has(#media-iframe[src*="jkanime"]),
+.player-wrapper:hover {
     border-color: var(--primary);
     box-shadow: 0 0 30px var(--primary-glow);
 }
@@ -24,75 +103,117 @@
     background: #000;
 }
 
-/* 2. Botón Especial SrRaid-X */
+/* --- FILTROS Y BUSCADOR --- */
+.search-wrapper { max-width: 600px; margin: 20px auto; padding: 0 20px; }
+.search-input { 
+    width: 100%; 
+    background: #0a0a0a; 
+    border: 2px solid #222; 
+    padding: 15px; 
+    color: white; 
+    text-align: center; 
+    font-family: 'Orbitron'; 
+    outline: none;
+}
+.search-input:focus { border-color: var(--primary); }
+
+.tv-filters {
+    display: flex; gap: 10px; overflow-x: auto; padding: 20px;
+    scrollbar-width: none; justify-content: flex-start;
+}
+.tv-filters::-webkit-scrollbar { display: none; }
+
+.filter-btn { 
+    flex-shrink: 0; 
+    background: #111; 
+    color: #888; 
+    border: 1px solid #222; 
+    padding: 8px 20px; 
+    border-radius: 20px; 
+    cursor: pointer; 
+    font-family: 'Orbitron'; 
+    font-size: 0.65rem; 
+    transition: 0.3s; 
+}
+
+.filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* --- GRID DE CONTENIDO --- */
+.grid-container { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+    gap: 20px; 
+    padding: 20px; 
+}
+
+/* Estilo para Cards de TV */
+.card-tv { 
+    background: #080808; 
+    border: 1px solid #222; 
+    padding: 30px 15px; 
+    border-radius: 12px; 
+    text-align: center; 
+    cursor: pointer; 
+    transition: var(--transition-ghost); 
+}
+.card-tv:hover { 
+    transform: scale(1.05); 
+    border-color: var(--primary); 
+    background: #150000; 
+}
+
+/* Estilo para Cards de Anime/Cine */
+.card { 
+    background: #111; 
+    border-radius: 8px; 
+    overflow: hidden; 
+    cursor: pointer; 
+    transition: 0.3s; 
+    border: 1px solid #222; 
+}
+.card:hover { transform: translateY(-10px); border-color: var(--primary); }
+.card img { width: 100%; height: 260px; object-fit: cover; }
+.card-title { padding: 10px; font-size: 0.75rem; text-align: center; font-family: 'Orbitron'; }
+
+/* --- SERVIDORES Y EPISODIOS --- */
+#srv-list {
+    display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+    padding: 20px; max-height: 150px; overflow-y: auto;
+}
+
 .btn-srv {
-    background: #111;
-    color: var(--text-dim);
-    border: 1px solid #222;
-    padding: 10px 18px;
-    font-family: 'Orbitron';
-    font-size: 0.65rem;
-    cursor: pointer;
-    transition: 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    background: #111; color: var(--text-dim); border: 1px solid #222;
+    padding: 10px 18px; font-family: 'Orbitron'; font-size: 0.65rem;
+    cursor: pointer; transition: 0.3s; text-transform: uppercase;
+}
+.btn-srv.active { 
+    background: var(--primary); color: white; 
+    box-shadow: 0 0 15px var(--primary-glow); 
 }
 
-.btn-srv:hover {
-    border-color: var(--primary);
-    color: white;
-}
-
-/* Estilo único para SrRaid-X */
-.btn-srv.active {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-    box-shadow: 0 0 15px var(--primary-glow);
-}
-
-/* 3. Estética de la Grid de Episodios */
 #episode-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-    gap: 10px;
-    padding: 20px 0;
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 10px; padding: 20px 0;
 }
 
 .ep-card {
-    background: #0a0a0a;
-    padding: 12px;
-    text-align: center;
-    border: 1px solid #222;
-    cursor: pointer;
-    font-family: 'Orbitron';
-    font-size: 0.8rem;
-    transition: 0.3s;
-    color: var(--text-dim);
+    background: #0a0a0a; padding: 12px; text-align: center;
+    border: 1px solid #222; cursor: pointer; font-family: 'Orbitron';
+    font-size: 0.8rem; transition: 0.3s; color: var(--text-dim);
+}
+.ep-card:hover { 
+    background: var(--primary); color: white; 
+    transform: translateY(-3px); border-color: var(--primary);
 }
 
-.ep-card:hover {
-    background: var(--primary);
-    color: white;
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px var(--primary-glow);
-    border-color: var(--primary);
-}
+/* --- VISTA DETALLES --- */
+.details-flex { display: flex; gap: 30px; flex-wrap: wrap; margin-top: 20px; }
+#detail-img { width: 200px; border-radius: 10px; border: 2px solid #333; }
+.detail-info { flex: 1; min-width: 300px; }
 
-/* 4. Scrollbar para la lista de servidores si hay muchos */
-#srv-list {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 20px;
-    max-height: 150px;
-    overflow-y: auto;
-}
+/* --- TABS --- */
+.content-tab { display: none; animation: fadeIn 0.5s; }
+.content-tab.active { display: block; }
 
-#srv-list::-webkit-scrollbar {
-    width: 4px;
-}
-#srv-list::-webkit-scrollbar-thumb {
-    background: var(--primary);
-}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
