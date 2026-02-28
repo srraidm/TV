@@ -3,173 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SrRaid TVULTRA | Elite Hub</title>
+    <meta name="referrer" content="no-referrer">
+    <title>SrRaid TV, Anime & Peliculas</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --primary: #ff4757;
-            --anime-cyan: #00d2ff;
+            --anime: #00d2ff;
+            --cine: #f1c40f;
             --bg: #050505;
             --card: #111;
             --text: #ffffff;
+            --border: #222;
         }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
+        * { box-sizing: border-box; }
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden; 
         }
 
         header {
-            background: #000;
-            padding: 20px;
+            background: #000; 
+            padding: 20px; 
             border-bottom: 3px solid var(--primary);
-            text-align: center;
-            position: sticky;
-            top: 0;
+            text-align: center; 
+            position: sticky; 
+            top: 0; 
             z-index: 1000;
-            box-shadow: 0 4px 20px rgba(255, 71, 87, 0.3);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.8);
         }
 
-        .brand {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.2rem;
-            letter-spacing: 3px;
+        .brand { 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: 2.2rem; 
+            letter-spacing: 3px; 
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
         }
-
         .brand span { color: var(--primary); }
 
-        nav {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
+        nav { 
+            display: flex; 
+            justify-content: center; 
+            gap: 12px; 
+            margin-top: 15px; 
+            flex-wrap: wrap; 
         }
-
+        
         .nav-btn {
-            padding: 10px 25px;
-            background: #1a1a1a;
-            border: 1px solid #333;
+            padding: 12px 22px; 
+            background: #151515; 
+            border: 1px solid #333; 
             color: white;
-            cursor: pointer;
-            border-radius: 5px;
-            font-weight: 800;
-            text-transform: uppercase;
+            cursor: pointer; 
+            border-radius: 6px; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            font-size: 0.75rem;
             transition: 0.3s;
         }
 
-        .nav-btn.active { background: var(--primary); border-color: var(--primary); box-shadow: 0 0 10px var(--primary); }
-        .nav-btn.anime-tab.active { background: var(--anime-cyan); border-color: var(--anime-cyan); box-shadow: 0 0 10px var(--anime-cyan); }
+        .nav-btn.active[onclick*="tv"] { background: var(--primary); border-color: var(--primary); box-shadow: 0 0 15px var(--primary); }
+        .nav-btn.active[onclick*="anime"] { background: var(--anime); border-color: var(--anime); box-shadow: 0 0 15px var(--anime); }
+        .nav-btn.active[onclick*="cine"] { background: var(--cine); border-color: var(--cine); color: #000; box-shadow: 0 0 15px var(--cine); }
 
-        .container { max-width: 1200px; margin: 15px auto; padding: 0 15px; }
+        .container { max-width: 1400px; margin: 20px auto; padding: 0 20px; }
 
         .player-viewport {
-            width: 100%;
-            background: #000;
-            aspect-ratio: 16/9;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 2px solid #222;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            width: 100%; 
+            background: #000; 
+            aspect-ratio: 16/9; 
+            border-radius: 12px;
+            overflow: hidden; 
+            border: 2px solid var(--border); 
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
+            position: relative;
         }
-
-        iframe, video { width: 100%; height: 100%; border: none; }
-
-        .anime-panel {
-            background: #151515;
-            padding: 15px;
-            display: none;
-            flex-direction: column;
-            gap: 15px;
-            border: 1px solid #222;
-            border-top: none;
-            border-radius: 0 0 10px 10px;
-        }
-
-        .anime-panel.active { display: flex; }
-
-        .server-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; }
         
-        .btn-s {
-            padding: 6px 10px;
-            background: #222;
-            border: 1px solid #444;
+        iframe, video { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+            display: block; 
+        }
+
+        .controls-panel {
+            background: #0d0d0d; 
+            padding: 20px; 
+            display: none; 
+            flex-direction: column;
+            gap: 15px; 
+            border: 1px solid var(--border); 
+            border-top: none; 
+            border-radius: 0 0 12px 12px;
+        }
+        .controls-panel.active { display: flex; }
+
+        .ctrl-group { text-align: center; }
+        .ctrl-label { 
+            font-size: 0.65rem; 
+            font-weight: 900; 
+            color: #555; 
+            text-transform: uppercase; 
+            margin-bottom: 8px; 
+            letter-spacing: 1px;
+        }
+        
+        .btn-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        
+        .btn-opt {
+            padding: 8px 14px; 
+            background: #1a1a1a; 
+            border: 1px solid #333; 
             color: white;
-            cursor: pointer;
-            font-size: 0.65rem;
-            font-weight: bold;
-            border-radius: 3px;
+            cursor: pointer; 
+            font-size: 0.7rem; 
+            font-weight: bold; 
+            border-radius: 4px;
             transition: 0.2s;
         }
+        .btn-opt:hover { background: #222; }
+        .btn-opt.active { background: #fff; color: #000; border-color: #fff; }
+        .btn-opt.lang { border-color: var(--cine); color: var(--cine); }
+        .btn-opt.lang.active { background: var(--cine); color: #000; }
 
-        .btn-s:hover { background: #333; }
-        .btn-s.active { background: var(--anime-cyan); border-color: var(--anime-cyan); color: #000; }
-
-        .section { display: none; padding-top: 20px; animation: fadeIn 0.5s; }
+        /* --- SECCIONES --- */
+        .section { display: none; padding-top: 30px; animation: slideUp 0.4s ease; }
         .section.active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .cat-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1rem;
-            margin: 35px 0 15px;
-            color: var(--primary);
-            border-left: 5px solid var(--primary);
-            padding-left: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-family: 'Orbitron', sans-serif; 
+            font-size: 1.1rem; 
+            margin: 40px 0 20px;
+            border-left: 5px solid var(--primary); 
+            padding-left: 15px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px;
+            color: #eee;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 15px;
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+            gap: 20px; 
         }
 
-        .card {
-            background: var(--card);
-            padding: 25px 10px;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            border: 1px solid #222;
+        .card { 
+            background: var(--card); 
+            padding: 30px 15px; 
+            border-radius: 10px; 
+            text-align: center; 
+            cursor: pointer; 
+            border: 1px solid #222; 
             transition: 0.3s;
-            position: relative;
-            overflow: hidden;
+        }
+        .card:hover { 
+            transform: translateY(-8px); 
+            border-color: var(--primary); 
+            background: #151515;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+        .card i { font-size: 2.5rem; margin-bottom: 15px; display: block; color: var(--primary); }
+        .card span { font-weight: 800; font-size: 0.85rem; letter-spacing: 0.5px; }
+
+        .poster-card { padding: 0; overflow: hidden; position: relative; border: 1px solid #333; }
+        .poster-card img { width: 100%; height: 260px; object-fit: cover; display: block; transition: 0.5s; }
+        .poster-card:hover img { transform: scale(1.08); }
+        .poster-info { 
+            padding: 12px; 
+            font-size: 0.8rem; 
+            font-weight: 800; 
+            background: rgba(0,0,0,0.9); 
+            height: 55px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            text-align: center;
         }
 
-        .card:hover { transform: translateY(-5px); border-color: var(--primary); background: #1a1a1a; }
-        .card i { font-size: 2.2rem; margin-bottom: 12px; display: block; color: var(--primary); transition: 0.3s; }
-        .card:hover i { transform: scale(1.1); color: #fff; }
-        .card span { font-weight: bold; font-size: 0.85rem; display: block; }
-
-        .anime-card { padding: 0; border-radius: 8px; }
-        .anime-card img { width: 100%; height: 220px; object-fit: cover; display: block; }
-        .anime-info { padding: 10px; background: rgba(0,0,0,0.8); }
-
-        .search-bar { 
+        .search-bar {
             width: 100%; 
             max-width: 600px; 
-            margin: 0 auto 25px; 
-            display: block; 
-            padding: 15px 25px; 
-            border-radius: 30px; 
+            margin: 0 auto 30px; 
+            display: block;
+            padding: 16px 25px; 
+            border-radius: 40px; 
             background: #111; 
             color: white; 
-            border: 2px solid #333; 
+            border: 2px solid #333;
             font-size: 1rem;
             outline: none;
             transition: 0.3s;
         }
+        .search-bar:focus { border-color: var(--anime); box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
 
-        .search-bar:focus { border-color: var(--anime-cyan); box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
-
+        footer { text-align: center; padding: 40px; color: #444; font-size: 0.8rem; font-family: 'Orbitron'; }
     </style>
 </head>
 <body>
@@ -177,32 +215,40 @@
 <header>
     <div class="brand">SrRaid <span>TVULTRA</span></div>
     <nav>
-        <button class="nav-btn active" onclick="show('tv', this)">TV & DEPORTES</button>
-        <button class="nav-btn anime-tab" onclick="show('anime', this)">SrRaid ANIME</button>
+        <button class="nav-btn active" onclick="tab('tv', this)">TV & DEPORTES</button>
+        <button class="nav-btn" onclick="tab('anime', this)">ANIME</button>
+        <button class="nav-btn" onclick="tab('cine', this)">CINE & PELICULAS</button>
     </nav>
 </header>
 
 <div class="container">
-    <div class="player-viewport">
-        <video id="tv-video" controls autoplay></video>
-        <iframe id="anime-iframe" style="display:none" allowfullscreen></iframe>
+    <div class="player-viewport" id="viewport">
+        <video id="hls-player" controls autoplay poster="https://wallpaperaccess.com/full/1567831.jpg"></video>
+        <iframe id="embed-iframe" style="display:none" allowfullscreen allow="autoplay; encrypted-media"></iframe>
     </div>
 
-    <div class="anime-panel" id="a-panel">
-        <div class="server-row">
-            <span style="font-size:0.7rem; font-weight: bold; color:var(--anime-cyan)">MIRRORS:</span>
-            <button class="btn-s active" onclick="setS('Vidsrc', this)">VIDSRC</button>
-            <button class="btn-s" onclick="setS('SuperEmbed', this)">SUPER-E</button>
-            <button class="btn-s" onclick="setS('Netu', this)">NETU</button>
-            <button class="btn-s" onclick="setS('EmbedSu', this)">EMBED.SU</button>
-            <button class="btn-s" onclick="setS('FileMoon', this)">FILEMOON</button>
-            <button class="btn-s" onclick="setS('Vidhide', this)">VIDHIDE</button>
-            <button class="btn-s" onclick="setS('Mixdrop', this)">MIXDROP</button>
+    <div class="controls-panel" id="ctrl-panel">
+        <div id="cine-lang-box" style="display:none" class="ctrl-group">
+            <div class="ctrl-label">Idioma Preferido</div>
+            <div class="btn-row">
+                <button class="btn-opt lang active" onclick="setLang('lat', this)">Latino</button>
+                <button class="btn-opt lang" onclick="setLang('sub', this)">Subtitulado</button>
+                <button class="btn-opt lang" onclick="setLang('es', this)">Castellano</button>
+                <button class="btn-opt lang" onclick="setLang('en', this)">English</button>
+            </div>
         </div>
-        <div style="display:flex; justify-content: space-between; align-items: center; padding: 0 10px;">
-            <button class="btn-s" style="padding: 8px 15px" onclick="chEp(-1)"><i class="fas fa-chevron-left"></i> ANTERIOR</button>
-            <span id="ep-info" style="font-weight:800; color:var(--anime-cyan); font-family: 'Orbitron'; font-size: 0.9rem;">EPISODIO 1</span>
-            <button class="btn-s" style="padding: 8px 15px" onclick="chEp(1)">SIGUIENTE <i class="fas fa-chevron-right"></i></button>
+        
+        <div class="ctrl-group" style="margin-top:10px">
+            <div class="ctrl-label">Cambiar Servidor (Si falla uno, elige otro)</div>
+            <div class="btn-row" id="srv-list"></div>
+        </div>
+
+        <div id="anime-nav" style="display:none" class="ctrl-group">
+            <div class="nav-controls" style="display:flex; justify-content: space-between; align-items: center; margin-top:15px; border-top: 1px solid #222; padding-top: 15px;">
+                <button class="btn-opt" onclick="chEp(-1)"><i class="fas fa-chevron-left"></i> EP. ANTERIOR</button>
+                <span id="ep-display" style="color:var(--anime); font-weight:900; font-family:'Orbitron'; font-size: 1rem;">EPISODIO 1</span>
+                <button class="btn-opt" onclick="chEp(1)">SIGUIENTE EP. <i class="fas fa-chevron-right"></i></button>
+            </div>
         </div>
     </div>
 
@@ -210,122 +256,175 @@
         <div class="cat-title"><i class="fas fa-futbol"></i> DEPORTES PREMIUM</div>
         <div class="grid" id="grid-dep"></div>
         
-        <div class="cat-title"><i class="fas fa-tv"></i> CANALES NACIONALES</div>
+        <div class="cat-title"><i class="fas fa-tv"></i> CANALES DE CHILE</div>
         <div class="grid" id="grid-chi"></div>
-        
-        <div class="cat-title"><i class="fas fa-broadcast-tower"></i> NOTICIAS & CABLE</div>
+
+        <div class="cat-title"><i class="fas fa-broadcast-tower"></i> CABLE & MUNDO</div>
         <div class="grid" id="grid-cab"></div>
+
+        <div class="cat-title"><i class="fas fa-newspaper"></i> NOTICIAS 24/7</div>
+        <div class="grid" id="grid-not"></div>
     </div>
 
     <div id="anime-section" class="section">
-        <input type="text" class="search-bar" id="a-search" placeholder="Escribe el nombre del anime y pulsa Enter..." onkeyup="if(event.key==='Enter') searchA()">
-        <div class="grid" id="grid-a"></div>
+        <input type="text" class="search-bar" id="a-search" placeholder="Buscar Anime (Ej: Attack on Titan, Kimetsu...)" onkeyup="if(event.key==='Enter') searchA()">
+        <div class="grid" id="grid-anime"></div>
+    </div>
+
+    <div id="cine-section" class="section">
+        <input type="text" class="search-bar" id="c-search" placeholder="Buscar Película en cualquier idioma..." onkeyup="if(event.key==='Enter') searchC()">
+        <div class="grid" id="grid-cine"></div>
     </div>
 </div>
 
+<footer>
+    SRRAID TVULTRA &copy; 2026 - ELITE STREAMING HUB<br>
+    Desarrollado para la máxima compatibilidad en GitHub Pages.
+</footer>
+
 <script>
-    const tvDB = {
+    const tvData = {
         dep: [
-            { n: "TNT Sports HD", u: "https://rudo.video/live/tntsports?ext=m3u8", i: "fa-futbol" },
-            { n: "CDO Premium", u: "https://rudo.video/live/cdo?ext=m3u8", i: "fa-trophy" },
-            { n: "Teletrak", u: "https://rudo.video/live/teletrak?ext=m3u8", i: "fa-horse" },
-            { n: "Zapping Sports", u: "https://rudo.video/live/zappingsports?ext=m3u8", i: "fa-bolt" }
+            {n:"TNT Sports HD", u:"https://rudo.video/live/tntsports?ext=m3u8", i:"fa-futbol"},
+            {n:"CDO Premium", u:"https://rudo.video/live/cdo?ext=m3u8", i:"fa-medal"},
+            {n:"Zapping Sports", u:"https://rudo.video/live/zappingsports?ext=m3u8", i:"fa-bolt"},
+            {n:"Teletrak HD", u:"https://rudo.video/live/teletrak?ext=m3u8", i:"fa-horse-head"},
+            {n:"Fox Sports 1", u:"https://rudo.video/live/foxsports1?ext=m3u8", i:"fa-running"}
         ],
         chi: [
-            { n: "Canal 13 HD", u: "https://rudo.video/live/c13?ext=m3u8", i: "fa-tv" },
-            { n: "Mega HD", u: "https://rudo.video/live/megatv?ext=m3u8", i: "fa-tv" },
-            { n: "Chilevisión", u: "https://rudo.video/live/chv?ext=m3u8", i: "fa-tv" },
-            { n: "TVN HD", u: "https://rudo.video/live/tvn?ext=m3u8", i: "fa-tv" },
-            { n: "La Red", u: "https://rudo.video/live/lared?ext=m3u8", i: "fa-tv" },
-            { n: "TV Mas", u: "https://rudo.video/live/tvmas?ext=m3u8", i: "fa-tv" }
+            {n:"Canal 13 HD", u:"https://rudo.video/live/c13?ext=m3u8", i:"fa-tv"},
+            {n:"Mega HD", u:"https://rudo.video/live/megatv?ext=m3u8", i:"fa-tv"},
+            {n:"Chilevisión", u:"https://rudo.video/live/chv?ext=m3u8", i:"fa-tv"},
+            {n:"TVN HD", u:"https://rudo.video/live/tvn?ext=m3u8", i:"fa-tv"},
+            {n:"La Red", u:"https://rudo.video/live/lared?ext=m3u8", i:"fa-tv"},
+            {n:"TV Mas", u:"https://rudo.video/live/tvmas?ext=m3u8", i:"fa-tv"}
         ],
         cab: [
-            { n: "T13 En Vivo", u: "https://rudo.video/live/t13?ext=m3u8", i: "fa-newspaper" },
-            { n: "24 Horas", u: "https://rudo.video/live/24horas?ext=m3u8", i: "fa-clock" },
-            { n: "Meganoticias", u: "https://rudo.video/live/mnoticias?ext=m3u8", i: "fa-bolt-lightning" },
-            { n: "CNN Chile", u: "https://rudo.video/live/cnnchile?ext=m3u8", i: "fa-globe" },
-            { n: "Bio Bio TV", u: "https://rudo.video/live/bbtv?ext=m3u8", i: "fa-microphone" }
+            {n:"Disney Channel", u:"https://rudo.video/live/disney?ext=m3u8", i:"fa-mickey-mouse"},
+            {n:"Discovery Channel", u:"https://rudo.video/live/discovery?ext=m3u8", i:"fa-earth-americas"},
+            {n:"Space", u:"https://rudo.video/live/space?ext=m3u8", i:"fa-rocket"},
+            {n:"Cinecanal", u:"https://rudo.video/live/cinecanal?ext=m3u8", i:"fa-film"},
+            {n:"Warner TV", u:"https://rudo.video/live/warner?ext=m3u8", i:"fa-clapperboard"}
+        ],
+        not: [
+            {n:"T13 En Vivo", u:"https://rudo.video/live/t13?ext=m3u8", i:"fa-newspaper"},
+            {n:"24 Horas News", u:"https://rudo.video/live/24horas?ext=m3u8", i:"fa-clock"},
+            {n:"Meganoticias", u:"https://rudo.video/live/mnoticias?ext=m3u8", i:"fa-bolt-lightning"},
+            {n:"CNN Chile", u:"https://rudo.video/live/cnnchile?ext=m3u8", i:"fa-globe"},
+            {n:"Bio Bio TV", u:"https://rudo.video/live/bbtv?ext=m3u8", i:"fa-microphone"}
         ]
     };
 
-    let curA = "", curE = 1, curS = "Vidsrc";
-    const vid = document.getElementById('tv-video');
-    const ifr = document.getElementById('anime-iframe');
-    const pan = document.getElementById('a-panel');
+    let curMode = "tv", curTitle = "", curEp = 1, curServ = "Vidsrc", curID = "", curLang = "lat";
+    const video = document.getElementById('hls-player'), iframe = document.getElementById('embed-iframe'), panel = document.getElementById('ctrl-panel');
     let hls = new Hls();
 
-    function show(id, b) {
+    function tab(m, btn) {
+        curMode = m;
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
-        document.getElementById(id + '-section').classList.add('active');
-        b.classList.add('active');
-        if(id==='tv') { pan.classList.remove('active'); ifr.style.display='none'; vid.style.display='block'; }
+        document.getElementById(m + '-section').classList.add('active');
+        btn.classList.add('active');
+        panel.classList.remove('active');
+        if(m==='tv') { iframe.style.display='none'; video.style.display='block'; }
+        renderServers();
     }
 
-    function loadTV() {
-        const draw = (id, l) => {
-            const g = document.getElementById(id);
-            l.forEach(c => g.innerHTML += `<div class="card" onclick="playTV('${c.u}')"><i class="fas ${c.i}"></i><span>${c.n}</span></div>`);
-        }
-        draw('grid-dep', tvDB.dep); draw('grid-chi', tvDB.chi); draw('grid-cab', tvDB.cab);
+    function renderServers() {
+        const box = document.getElementById('srv-list'); box.innerHTML = "";
+        const list = curMode === "anime" ? ["Vidsrc", "EmbedSu", "SuperE", "Netu"] : ["Vidsrc", "EmbedSu", "Cuevana", "SuperE", "VidHide"];
+        list.forEach(s => {
+            box.innerHTML += `<button class="btn-opt ${curServ===s?'active':''}" onclick="setServ('${s}')">${s}</button>`;
+        });
+        document.getElementById('cine-lang-box').style.display = curMode === "cine" ? "block" : "none";
+        document.getElementById('anime-nav').style.display = curMode === "anime" ? "block" : "none";
     }
 
     function playTV(u) {
-        ifr.style.display = 'none'; vid.style.display = 'block';
-        if (Hls.isSupported()) { hls.destroy(); hls = new Hls(); hls.loadSource(u); hls.attachMedia(vid); hls.on(Hls.Events.MANIFEST_PARSED, () => vid.play()); }
-        else { vid.src = u; vid.play(); }
+        iframe.style.display='none'; video.style.display='block';
+        if(Hls.isSupported()){ 
+            hls.destroy(); 
+            hls = new Hls(); 
+            hls.loadSource(u); 
+            hls.attachMedia(video); 
+            hls.on(Hls.Events.MANIFEST_PARSED, () => video.play()); 
+        }
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     async function searchA() {
         const q = document.getElementById('a-search').value;
-        const g = document.getElementById('grid-a');
-        g.innerHTML = "<div style='grid-column: 1/-1; text-align:center'>Buscando en SrRaid Anime Database...</div>";
-        try {
-            const r = await fetch(`https://api.jikan.moe/v4/anime?q=${q}&limit=18`);
-            const { data } = await r.json();
-            g.innerHTML = "";
-            data.forEach(a => {
-                g.innerHTML += `
-                <div class="card anime-card" onclick="initA('${a.title}')">
-                    <img src="${a.images.jpg.image_url}">
-                    <div class="anime-info"><span>${a.title}</span></div>
-                </div>`;
-            });
-        } catch(e) { g.innerHTML = "Error al conectar con la API."; }
+        const r = await fetch(`https://api.jikan.moe/v4/anime?q=${q}&limit=15`);
+        const {data} = await r.json();
+        const g = document.getElementById('grid-anime'); g.innerHTML = "";
+        data.forEach(a => {
+            g.innerHTML += `<div class="card poster-card" onclick="initMedia('${a.title}', 'anime')"><img src="${a.images.jpg.image_url}"><div class="poster-info">${a.title}</div></div>`;
+        });
     }
 
-    function initA(t) { curA = t; curE = 1; loadA(); }
+    // --- CINE LOGIC ---
+    async function searchC() {
+        const q = document.getElementById('c-search').value;
+        const r = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=ace288544d732899479e96e944733e8f&query=${q}&language=es-MX`);
+        const {results} = await r.json();
+        const g = document.getElementById('grid-cine'); g.innerHTML = "";
+        results.forEach(m => {
+            if(!m.poster_path) return;
+            g.innerHTML += `<div class="card poster-card" onclick="initMedia('${m.title}', 'cine', '${m.id}')"><img src="https://image.tmdb.org/t/p/w500${m.poster_path}"><div class="poster-info">${m.title}</div></div>`;
+        });
+    }
 
-    function loadA() {
-        vid.style.display = 'none'; ifr.style.display = 'block';
-        pan.classList.add('active');
-        document.getElementById('ep-info').innerText = "EPISODIO " + curE;
-        
-        let slug = curA.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-        
-        // MOTOR DE REPRODUCTORES EXPANDIDO
-        if(curS === 'Vidsrc') ifr.src = `https://vidsrc.me/embed/anime?last_name=${slug}&ep=${curE}`;
-        else if(curS === 'SuperEmbed') ifr.src = `https://multiembed.mov/?video_id=${slug}&s=${curE}`;
-        else if(curS === 'Netu') ifr.src = `https://waaw.to/search.php?q=${slug}+ep+${curE}`;
-        else if(curS === 'EmbedSu') ifr.src = `https://embed.su/embed/anime/${slug}/${curE}`;
-        else if(curS === 'FileMoon') ifr.src = `https://filemoon.sx/e/${slug}`;
-        else if(curS === 'Vidhide') ifr.src = `https://vidhide.com/v/${slug}`;
-        else if(curS === 'Mixdrop') ifr.src = `https://mixdrop.co/s/${slug}`;
-        
+    function initMedia(t, m, id) { 
+        curTitle = t; curMode = m; curEp = 1; curID = id; 
+        loadMedia(); 
+    }
+
+    function loadMedia() {
+        video.style.display='none'; iframe.style.display='block'; panel.classList.add('active');
+        document.getElementById('ep-display').innerText = "EPISODIO " + curEp;
+        let slug = curTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+        let url = "";
+
+        if(curMode === 'anime') {
+            // Anime: Japonés Subtitulado
+            if(curServ === "Vidsrc") url = `https://vidsrc.me/embed/anime?last_name=${slug}&ep=${curEp}`;
+            else if(curServ === "EmbedSu") url = `https://embed.su/embed/anime/${slug}/${curEp}`;
+            else if(curServ === "SuperE") url = `https://multiembed.mov/?video_id=${slug}&s=${curEp}`;
+            else url = `https://waaw.to/search.php?q=${slug}`;
+        } else {
+            // Cine: Multi-idioma
+            if(curServ === "Vidsrc") url = `https://vidsrc.xyz/embed/movie?tmdb=${curID}`;
+            else if(curServ === "EmbedSu") url = `https://embed.su/embed/movie/${curID}`;
+            else if(curServ === "Cuevana") url = `https://api.cuevana.biz/embed/${curID}`;
+            else if(curServ === "VidHide") url = `https://vidhide.com/v/${curID}`;
+            else url = `https://multiembed.mov/?video_id=${curID}&tmdb=1`;
+        }
+
+        iframe.src = url;
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function chEp(v) { curE += v; if(curE<1) curE=1; loadA(); }
-    function setS(s, b) { 
-        curS = s; 
-        document.querySelectorAll('.btn-s').forEach(x => x.classList.remove('active'));
+    function setServ(s) { curServ = s; renderServers(); loadMedia(); }
+    function setLang(l, b) { 
+        curLang = l; 
+        document.querySelectorAll('.lang').forEach(x => x.classList.remove('active'));
         b.classList.add('active');
-        loadA(); 
+        loadMedia(); 
     }
+    function chEp(v) { curEp += v; if(curEp<1) curEp=1; loadMedia(); }
 
-    loadTV();
-    playTV(tvDB.dep[0].u);
+    const drawGrid = (id, list) => {
+        const g = document.getElementById(id);
+        list.forEach(c => {
+            g.innerHTML += `<div class="card" onclick="playTV('${c.u}')"><i class="fas ${c.i}"></i><span>${c.n}</span></div>`;
+        });
+    }
+    
+    drawGrid('grid-dep', tvData.dep);
+    drawGrid('grid-chi', tvData.chi);
+    drawGrid('grid-cab', tvData.cab);
+    drawGrid('grid-not', tvData.not);
+
 </script>
 </body>
 </html>
