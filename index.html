@@ -8,7 +8,8 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="style.css?v=1.1">
     
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
@@ -27,14 +28,7 @@
         <div class="player-container">
             <div class="player-wrapper" id="ghost-frame">
                 <video id="hls-player" controls autoplay poster="https://wallpaperaccess.com/full/1567831.jpg"></video>
-                
-                <iframe 
-                    id="media-iframe" 
-                    style="display:none;" 
-                    allowfullscreen 
-                    referrerpolicy="no-referrer" 
-                    sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation">
-                </iframe>
+                <iframe id="media-iframe" style="display:none;" allowfullscreen referrerpolicy="no-referrer" sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>
             </div>
             
             <div id="anime-controls" class="ep-nav" style="display:none;">
@@ -84,13 +78,13 @@
                     <i class="fas fa-undo"></i> VOLVER A LA GRID
                 </button>
                 <div class="details-flex">
-                    <img id="detail-img" src="" style="max-width: 200px; border-radius: 8px;">
-                    <div class="detail-info" style="padding: 0 20px;">
-                        <h1 id="detail-title" style="font-family: 'Orbitron'; color: var(--primary);"></h1>
-                        <p id="detail-desc" style="color: #ccc; line-height: 1.6; margin-top: 10px;"></p>
+                    <img id="detail-img" src="">
+                    <div class="detail-info">
+                        <h1 id="detail-title"></h1>
+                        <p id="detail-desc"></p>
                     </div>
                 </div>
-                <h3 style="font-family: 'Orbitron'; margin-top: 30px; border-left: 4px solid var(--primary); padding-left: 10px;">SELECCIONAR EPISODIO</h3>
+                <h3 class="ep-title">SELECCIONAR EPISODIO</h3>
                 <div id="episode-grid" class="grid-container episodes"></div>
             </div>
         </section>
