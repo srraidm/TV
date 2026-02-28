@@ -1,170 +1,160 @@
-// --- CONFIGURACIÓN DE APIS Y ESTADO ---
-const TMDB_KEY = 'ace288544d732899479e96e944733e8f';
+// --- ESTADO GLOBAL DE LA APP ---
 let currentMode = 'tv';
 let currentId = '';
 let currentEp = 1;
-let currentSrv = 'Vidsrc';
+let currentSrv = 'Vidsrc.me';
 
-// --- BASE DE DATOS TV (M3U8 Directo) ---
-const TV_CHANNELS = [
-    { n: "Canal 13 HD", u: "https://rudo.video/live/c13", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Canal_13_Chile_logo.svg/1200px-Canal_13_Chile_logo.svg.png" },
-    { n: "Mega HD", u: "https://rudo.video/live/megatv", img: "https://upload.wikimedia.org/wikipedia/commons/2/22/Mega_logo_2020.png" },
-    { n: "Chilevisión", u: "https://rudo.video/live/chv", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Chilevisi%C3%B3n_logo_2018.svg/1024px-Chilevisi%C3%B3n_logo_2018.svg.png" },
-    { n: "TVN Chile", u: "https://rudo.video/live/tvn", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/TVN_Chile_logo_2020.svg/1200px-TVN_Chile_logo_2020.svg.png" },
-    { n: "TNT Sports", u: "https://rudo.video/live/tntsports", img: "https://logodownload.org/wp-content/uploads/2019/11/tnt-sports-logo-0.png" }
-];
-
-// --- SELECTORES ---
-const hlsVid = document.getElementById('hls-player');
-const ifr = document.getElementById('media-iframe');
-const srvPanel = document.getElementById('srv-panel');
+// --- ELEMENTOS DEL DOM ---
+const hlsPlayer = document.getElementById('hls-player');
+const iframePlayer = document.getElementById('media-iframe');
 const srvList = document.getElementById('srv-list');
-const animeCtrl = document.getElementById('anime-controls');
-let hls = new Hls();
+const globalSearch = document.getElementById('global-search');
 
-// --- NAVEGACIÓN DE PESTAÑAS ---
+// --- 1. GESTIÓN DE PESTAÑAS (TABS) ---
 document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.onclick = () => {
+        const target = btn.getAttribute('data-target');
+        
+        // UI: Activar botón y sección
         document.querySelectorAll('.nav-btn, .content-tab').forEach(el => el.classList.remove('active'));
         btn.classList.add('active');
-        document.getElementById(btn.dataset.target).classList.add('active');
-        currentMode = btn.dataset.target.split('-')[0];
-        if (currentMode === 'tv') stopMedia();
+        document.getElementById(target).classList.add('active');
+        
+        // Lógica: Cambiar modo
+        currentMode = target.split('-')[0];
+        console.log("Modo cambiado a:", currentMode);
     };
 });
 
-// --- LÓGICA DE REPRODUCTORES (ANTI-BLOQUEO) ---
-const getServers = (id, ep) => {
-    if (currentMode === 'anime') {
-        return {
-            "Vidsrc": `https://vidsrc.me/embed/anime?mal=${id}&ep=${ep}`,
-            "Magi": `https://vidsrc.to/embed/anime/${id}/${ep}`,
-            "Desu": `https://anime.vidsrc.xyz/embed/anime?mal=${id}&ep=${ep}`,
-            "SuperE": `https://multiembed.mov/?video_id=${id}&s=${ep}&type=anime`,
-            "VOE": `https://voe.sx/e/${id}`,
-            "Vidhide": `https://vidhide.online/v/${id}`
-        };
-    } else {
-        return {
-            "Vidsrc": `https://vidsrc.xyz/embed/movie?tmdb=${id}`,
-            "EmbedSu": `https://embed.su/embed/movie/${id}`,
-            "Cuevana": `https://api.cuevana.biz/embed/${id}`,
-            "Vidhide": `https://vidhide.online/v/${id}`,
-            "AutoE": `https://autoembed.to/movie/tmdb/${id}`
-        };
-    }
-};
-
-// --- FUNCIÓN CARGAR CONTENIDO ---
+// --- 2. CARGA DE MEDIOS (ANIME / CINE) ---
 function loadMedia(id, type) {
     currentId = id;
     currentMode = type;
-    srvPanel.classList.add('active');
-    hlsVid.style.display = 'none';
-    ifr.style.display = 'block';
-    animeCtrl.style.display = (type === 'anime') ? 'flex' : 'none';
+    currentEp = 1; // Reiniciar episodio al cambiar de anime
+
+    // Limpiar reproductores
+    hlsPlayer.style.display = 'none';
+    iframePlayer.style.display = 'block';
+    iframePlayer.src = ""; 
+
+    renderServerButtons();
+    autoLoadFirstServer();
     
-    renderServers();
-    updateIframe();
-    window.scrollTo({top: 0, behavior: 'smooth'});
+    // Scroll suave hacia arriba para ver el video
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function updateIframe() {
-    const srvs = getServers(currentId, currentEp);
-    ifr.src = srvs[currentSrv] || Object.values(srvs)[0];
-    document.getElementById('current-ep-display').innerText = `EPISODIO ${currentEp}`;
-}
-
-function renderServers() {
-    const srvs = getServers(currentId, currentEp);
+// --- 3. RENDERIZADO DE SERVIDORES ---
+function renderServerButtons() {
     srvList.innerHTML = "";
-    Object.keys(srvs).forEach(key => {
+    const servers = currentMode === 'anime' 
+        ? SERVERS_DB.anime(currentId, currentEp) 
+        : SERVERS_DB.cine(currentId);
+
+    Object.keys(servers).forEach(name => {
         const btn = document.createElement('button');
-        btn.className = `btn-server ${currentSrv === key ? 'active' : ''}`;
-        btn.innerText = key;
+        btn.className = 'btn-srv';
+        btn.innerText = name;
+        if(name === currentSrv) btn.classList.add('active');
+
         btn.onclick = () => {
-            currentSrv = key;
-            renderServers();
-            updateIframe();
+            // UI: Activar botón
+            document.querySelectorAll('.btn-srv').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Lógica: Cambiar Source
+            currentSrv = name;
+            iframePlayer.src = servers[name];
         };
         srvList.appendChild(btn);
     });
 }
 
-// --- CANALES EN VIVO ---
-function playTV(url) {
-    srvPanel.classList.remove('active');
-    ifr.style.display = 'none';
-    hlsVid.style.display = 'block';
+function autoLoadFirstServer() {
+    const servers = currentMode === 'anime' 
+        ? SERVERS_DB.anime(currentId, currentEp) 
+        : SERVERS_DB.cine(currentId);
     
-    let streamUrl = url + "?ext=m3u8";
+    const firstUrl = Object.values(servers)[0];
+    iframePlayer.src = firstUrl;
+}
+
+// --- 4. TV EN VIVO (HLS MOTOR) ---
+let hls = new Hls();
+function playTV(url) {
+    iframePlayer.style.display = 'none';
+    hlsPlayer.style.display = 'block';
+    srvList.innerHTML = "<p style='font-size:0.7rem; color:gray;'>Streaming Directo HLS</p>";
+
     if (Hls.isSupported()) {
         hls.destroy();
         hls = new Hls();
-        hls.loadSource(streamUrl);
-        hls.attachMedia(hlsVid);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => hlsVid.play());
+        hls.loadSource(url + "?ext=m3u8");
+        hls.attachMedia(hlsPlayer);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => hlsPlayer.play());
+    } else if (hlsPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+        hlsPlayer.src = url;
+        hlsPlayer.play();
     }
 }
 
-function stopMedia() {
-    hls.destroy();
-    ifr.src = "";
-    srvPanel.classList.remove('active');
-}
+// --- 5. BUSCADOR (APIS REALES) ---
+async function performSearch() {
+    const query = globalSearch.value.trim();
+    if (!query) return;
 
-// --- BUSCADORES Y APIS ---
-async function searchA(q = "Dragon Ball") {
-    const r = await fetch(`https://api.jikan.moe/v4/anime?q=${q}&limit=12`);
-    const {data} = await r.json();
-    const g = document.getElementById('grid-anime'); g.innerHTML = "";
-    data.forEach(a => {
-        g.innerHTML += `<div class="card" onclick="loadMedia('${a.mal_id}','anime')">
-            <img src="${a.images.jpg.large_image_url}">
-            <div class="card-overlay"><div class="card-title">${a.title}</div></div>
-        </div>`;
-    });
-}
-
-async function searchC(q = "") {
-    const url = q ? `search/movie?query=${q}` : `movie/popular?`;
-    const r = await fetch(`https://api.themoviedb.org/3/${url}&api_key=${TMDB_KEY}&language=es-MX`);
-    const {results} = await r.json();
-    const g = document.getElementById('grid-cine'); g.innerHTML = "";
-    results.forEach(m => {
-        if(!m.poster_path) return;
-        g.innerHTML += `<div class="card" onclick="loadMedia('${m.id}','cine')">
-            <img src="https://image.tmdb.org/t/p/w500${m.poster_path}">
-            <div class="card-overlay"><div class="card-title">${m.title}</div></div>
-        </div>`;
-    });
-}
-
-// --- NAVEGACIÓN EPISODIOS ---
-function changeEpisode(val) {
-    currentEp += val;
-    if (currentEp < 1) currentEp = 1;
-    updateIframe();
-}
-
-// --- BUSQUEDA GLOBAL ---
-document.getElementById('global-search').onkeyup = (e) => {
-    if(e.key === 'Enter') {
-        const val = e.target.value;
-        if(currentMode === 'anime') searchA(val);
-        else if(currentMode === 'cine') searchC(val);
+    if (currentMode === 'anime') {
+        const res = await fetch(`https://api.jikan.moe/v4/anime?q=${query}&limit=15`);
+        const { data } = await res.json();
+        renderResults('grid-anime', data, 'anime');
+    } else {
+        const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=ace288544d732899479e96e944733e8f&query=${query}&language=es-MX`);
+        const { results } = await res.json();
+        renderResults('grid-cine', results, 'cine');
     }
-};
+}
 
-// --- INICIALIZACIÓN ---
-const init = () => {
-    TV_CHANNELS.forEach(c => {
-        document.getElementById('grid-tv').innerHTML += `<div class="card" onclick="playTV('${c.u}')">
-            <img src="${c.img}" style="object-fit: contain; padding: 20px; background: #000;">
-            <div class="card-overlay"><div class="card-title">${c.n}</div></div>
-        </div>`;
+function renderResults(containerId, items, type) {
+    const grid = document.getElementById(containerId);
+    grid.innerHTML = "";
+
+    items.forEach(item => {
+        const id = item.mal_id || item.id;
+        const title = item.title || item.name;
+        const img = item.images?.jpg.large_image_url || `https://image.tmdb.org/t/p/w500${item.poster_path}`;
+
+        if (img && !img.includes('null')) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <img src="${img}" alt="${title}" loading="lazy">
+                <div class="card-title">${title}</div>
+            `;
+            card.onclick = () => loadMedia(id, type);
+            grid.appendChild(card);
+        }
     });
-    searchA(); searchC();
-};
+}
 
-init();
+// --- 6. EVENTOS DE INICIO ---
+globalSearch.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') performSearch();
+});
+
+// Cargar Canales de TV al inicio
+function initTV() {
+    const tvGrid = document.getElementById('grid-tv');
+    SERVERS_DB.tv.forEach(ch => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <img src="${ch.img}" style="object-fit:contain; padding:15px; background:#000;">
+            <div class="card-title">${ch.n}</div>
+        `;
+        card.onclick = () => playTV(ch.u);
+        tvGrid.appendChild(card);
+    });
+}
+
+// Ejecutar al cargar la página
+window.onload = initTV;
