@@ -37,9 +37,32 @@
             <div id="srv-list"></div>
         </div>
 
+        <div id="search-area">
+            <div class="search-wrapper">
+                <input type="text" id="global-search" class="search-input" placeholder="Buscar título y presiona Enter...">
+            </div>
+        </div>
+
+        <section id="tv-section" class="content-tab active">
+            <h2 class="section-title">Canales en Vivo</h2>
+            <div id="grid-tv" class="grid-container"></div>
+        </section>
+
+        <section id="anime-section" class="content-tab">
+            <h2 class="section-title">Explorar Anime</h2>
+            <div id="grid-anime" class="grid-container"></div>
+        </section>
+
+        <section id="cine-section" class="content-tab">
+            <h2 class="section-title">Películas y Series</h2>
+            <div id="grid-cine" class="grid-container"></div>
+        </section>
+
         <section id="details-view" class="content-tab">
             <div class="details-card">
-                <button onclick="backToGrid()" class="nav-btn"><i class="fas fa-chevron-left"></i> Volver</button>
+                <button onclick="backToGrid()" class="nav-btn" style="margin-bottom:20px;">
+                    <i class="fas fa-chevron-left"></i> Volver al listado
+                </button>
                 <div class="details-flex">
                     <img id="detail-img" src="" alt="Portada">
                     <div class="detail-info">
@@ -49,26 +72,10 @@
                     </div>
                 </div>
                 <div id="episode-section">
-                    <h3>Lista de Episodios</h3>
+                    <h3 class="section-title">Lista de Episodios</h3>
                     <div id="episode-grid" class="grid-container"></div>
                 </div>
             </div>
-        </section>
-
-        <div class="search-wrapper">
-            <input type="text" id="global-search" class="search-input" placeholder="Buscar...">
-        </div>
-
-        <section id="tv-section" class="content-tab active">
-            <div id="grid-tv" class="grid-container"></div>
-        </section>
-
-        <section id="anime-section" class="content-tab">
-            <div id="grid-anime" class="grid-container"></div>
-        </section>
-
-        <section id="cine-section" class="content-tab">
-            <div id="grid-cine" class="grid-container"></div>
         </section>
     </main>
 
