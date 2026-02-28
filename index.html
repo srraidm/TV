@@ -4,283 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="no-referrer">
-    <title>SrRaid TV, Anime & Peliculas</title>
+    <title>SrRaid TVULTRA | Pro Streaming</title>
     
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <style>
-        :root {
-            --primary: #ff4757; --anime: #00d2ff; --cine: #f1c40f;
-            --bg: #080808; --card: #151515; --text: #ffffff;
-        }
-
-        * { box-sizing: border-box; outline: none; transition: 0.3s; }
-        body { background: var(--bg); color: var(--text); margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-
-        /* HEADER PREMIUM */
-        header {
-            background: #000; padding: 25px; border-bottom: 4px solid var(--primary);
-            text-align: center; position: sticky; top: 0; z-index: 1000;
-        }
-        .brand { font-family: 'Orbitron', sans-serif; font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; }
-        .brand span { color: var(--primary); }
-
-        nav { display: flex; justify-content: center; gap: 12px; margin-top: 15px; flex-wrap: wrap; }
-        .nav-btn {
-            padding: 12px 25px; background: #1a1a1a; border: none; color: white;
-            cursor: pointer; border-radius: 8px; font-weight: 900; text-transform: uppercase; font-size: 0.8rem;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .nav-btn.active { background: var(--primary); box-shadow: 0 0 20px var(--primary); }
-        .nav-btn.active[onclick*="anime"] { background: var(--anime); box-shadow: 0 0 20px var(--anime); }
-        .nav-btn.active[onclick*="cine"] { background: var(--cine); color: #000; box-shadow: 0 0 20px var(--cine); }
-
-        /* REPRODUCTOR MASTER */
-        .container { max-width: 1400px; margin: 20px auto; padding: 0 20px; }
-        
-        .player-viewport {
-            width: 100%; background: #000; aspect-ratio: 16/9; border-radius: 15px;
-            overflow: hidden; border: 3px solid #222; position: relative;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-        }
-        iframe, video { width: 100%; height: 100%; border: none; background: #000; }
-
-        /* PANEL DE REPRODUCTORES (ANTI-FALLOS) */
-        .srv-panel {
-            background: #0d0d0d; padding: 20px; display: none; border: 1px solid #222; 
-            border-top: none; border-radius: 0 0 15px 15px; margin-bottom: 30px;
-        }
-        .srv-panel.active { display: block; }
-        .srv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
-        
-        .btn-srv {
-            padding: 10px; background: #1a1a1a; border: 1px solid #333; color: #eee;
-            cursor: pointer; font-size: 0.7rem; font-weight: bold; border-radius: 6px; text-transform: uppercase;
-        }
-        .btn-srv.active { background: #fff; color: #000; border-color: #fff; }
-
-        /* SECCIONES Y GRIDS */
-        .section { display: none; padding-top: 20px; animation: fadeIn 0.5s; }
-        .section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .cat-title {
-            font-family: 'Orbitron', sans-serif; font-size: 1.1rem; margin: 40px 0 20px;
-            border-left: 5px solid var(--primary); padding-left: 15px; color: #fff;
-        }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
-        
-        /* CARDS ESTILO NETFLIX */
-        .card { 
-            background: var(--card); border-radius: 12px; overflow: hidden; 
-            cursor: pointer; border: 1px solid #222; position: relative;
-        }
-        .card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .card img { width: 100%; height: 270px; object-fit: cover; }
-        .card-info { padding: 15px; text-align: center; font-size: 0.85rem; font-weight: bold; background: rgba(0,0,0,0.8); }
-
-        /* BUSCADORES */
-        .search-bar {
-            width: 100%; max-width: 600px; margin: 0 auto 30px; display: block;
-            padding: 18px 30px; border-radius: 40px; background: #111; color: white;
-            border: 2px solid #333; font-size: 1rem;
-        }
-
-        /* NAVEGACIÓN DE EPISODIOS */
-        #ep-nav {
-            display: none; justify-content: space-between; align-items: center;
-            margin-top: 20px; padding-top: 20px; border-top: 1px solid #222;
-        }
-        .ep-btn {
-            padding: 12px 25px; background: var(--anime); border: none;
-            color: #000; font-weight: 900; border-radius: 8px; cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
 
-<header>
-    <div class="brand">SrRaid <span>TVULTRA</span></div>
-    <nav>
-        <button class="nav-btn active" onclick="tab('tv', this)"><i class="fas fa-tv"></i> TV & Deportes</button>
-        <button class="nav-btn" onclick="tab('anime', this)"><i class="fas fa-fire"></i> Anime</button>
-        <button class="nav-btn" onclick="tab('cine', this)"><i class="fas fa-film"></i> Cine & Estrenos</button>
-    </nav>
-</header>
+    <header>
+        <div class="brand">SrRaid <span>TVULTRA</span></div>
+        <nav>
+            <button class="nav-btn active" data-target="tv-section">
+                <i class="fas fa-broadcast-tower"></i> TV En Vivo
+            </button>
+            <button class="nav-btn" data-target="anime-section">
+                <i class="fas fa-dragon"></i> Anime
+            </button>
+            <button class="nav-btn" data-target="cine-section">
+                <i class="fas fa-film"></i> Cine & Series
+            </button>
+        </nav>
+    </header>
 
-<div class="container">
-    <div class="player-viewport">
-        <video id="hls-player" controls autoplay playsinline></video>
-        <iframe id="media-iframe" style="display:none" allowfullscreen sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>
-    </div>
-
-    <div class="srv-panel" id="srv-panel">
-        <div class="srv-grid" id="srv-list"></div>
-        <div id="ep-nav">
-            <button class="ep-btn" onclick="chEp(-1)">ANTERIOR</button>
-            <span id="ep-tag" style="color:var(--anime); font-weight:900; font-family:Orbitron; font-size:1.2rem;">EPISODIO 1</span>
-            <button class="ep-btn" onclick="chEp(1)">SIGUIENTE</button>
-        </div>
-    </div>
-
-    <div id="tv-sec" class="section active">
-        <div class="cat-title">CANALES NACIONALES CHILE</div>
-        <div class="grid" id="grid-tv-chi"></div>
-        <div class="cat-title">DEPORTES PREMIUM</div>
-        <div class="grid" id="grid-tv-dep"></div>
-    </div>
-
-    <div id="anime-sec" class="section">
-        <input type="text" class="search-bar" id="a-in" placeholder="Buscar Anime (Ej: Naruto, One Piece)..." onkeyup="if(event.key==='Enter') searchA()">
-        <div class="cat-title">ANIME EN TENDENCIA</div>
-        <div class="grid" id="grid-a"></div>
-    </div>
-
-    <div id="cine-sec" class="section">
-        <input type="text" class="search-bar" id="c-in" placeholder="Buscar Película o Serie..." onkeyup="if(event.key==='Enter') searchC()">
-        <div class="cat-title">ESTRENOS MUNDIALES 2026</div>
-        <div class="grid" id="grid-c"></div>
-    </div>
-</div>
-
-<script>
-    // BASE DE DATOS TV CON BYPASS DE RUDO.VIDEO
-    const tvDB = {
-        chi: [
-            {n:"Canal 13 HD", u:"https://rudo.video/live/c13"},
-            {n:"Mega HD", u:"https://rudo.video/live/megatv"},
-            {n:"Chilevisión", u:"https://rudo.video/live/chv"},
-            {n:"TVN Chile", u:"https://rudo.video/live/tvn"},
-            {n:"La Red", u:"https://rudo.video/live/lared"},
-            {n:"T13 En Vivo", u:"https://rudo.video/live/t13"}
-        ],
-        dep: [
-            {n:"TNT Sports HD", u:"https://rudo.video/live/tntsports"},
-            {n:"CDO Premium", u:"https://rudo.video/live/cdo"},
-            {n:"Fox Sports 1", u:"https://rudo.video/live/foxsports1"},
-            {n:"Zapping Sports", u:"https://rudo.video/live/zappingsports"}
-        ]
-    };
-
-    let mode = "tv", title = "", ep = 1, curSrv = "Desu", idM = "";
-    const hlsVid = document.getElementById('hls-player'), ifr = document.getElementById('media-iframe'), pan = document.getElementById('srv-panel');
-    let hls = new Hls();
-
-    function tab(m, b) {
-        mode = m;
-        document.querySelectorAll('.section, .nav-btn').forEach(x => x.classList.remove('active'));
-        document.getElementById(m + '-sec').classList.add('active');
-        b.classList.add('active');
-        pan.classList.remove('active');
-        if(m==='tv'){ ifr.style.display='none'; hlsVid.style.display='block'; }
-        renderSrvs();
-    }
-
-    function renderSrvs() {
-        const box = document.getElementById('srv-list'); box.innerHTML = "";
-        // LISTA DE REPRODUCTORES CON FALLBACKS (Si uno falla, el otro tiene otra IP)
-        const list = mode === "anime" 
-            ? ["Desu", "Magi", "Xtreme", "Vidhide", "VOE", "Vidsrc", "Streamwish", "Okru", "Mixdrop"] 
-            : ["Vidsrc", "EmbedSu", "Cuevana", "Vidhide", "Mixdrop"];
+    <main class="main-content">
         
-        list.forEach(s => box.innerHTML += `<button class="btn-srv ${curSrv===s?'active':''}" onclick="setSrv('${s}')">${s}</button>`);
-        document.getElementById('ep-nav').style.display = mode === "anime" ? "flex" : "none";
-    }
+        <section class="video-section">
+            <div class="player-wrapper" id="main-viewport">
+                <video id="hls-player" controls autoplay playsinline></video>
+                <iframe id="media-iframe" style="display:none" allowfullscreen sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>
+            </div>
 
-    // --- MOTOR DE TV (BYPASS DE BLOQUEOS) ---
-    function playTV(u) {
-        ifr.style.display='none'; hlsVid.style.display='block';
-        // Agregamos parámetros para engañar al servidor y saltar el bloqueo de GitHub
-        let stream = u + "?ext=m3u8&token=free&v=" + Date.now();
-        if(Hls.isSupported()){
-            hls.destroy(); hls = new Hls();
-            hls.loadSource(stream); hls.attachMedia(hlsVid);
-            hls.on(Hls.Events.MANIFEST_PARSED, () => hlsVid.play());
-        }
-    }
+            <div class="server-panel" id="srv-panel">
+                <div class="server-grid" id="srv-list">
+                    </div>
+                
+                <div class="ep-nav" id="anime-controls" style="display:none;">
+                    <button class="btn-ep" onclick="changeEpisode(-1)">
+                        <i class="fas fa-backward"></i> Anterior
+                    </button>
+                    <span id="current-ep-display" style="font-family: 'Orbitron'; font-weight: 900; color: var(--anime-blue);">EPISODIO 1</span>
+                    <button class="btn-ep" onclick="changeEpisode(1)">
+                        Siguiente <i class="fas fa-forward"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
 
-    // --- MOTOR DE BÚSQUEDA ANIME (API JIKAN) ---
-    async function searchA(q = "Solo Leveling") {
-        const query = q || document.getElementById('a-in').value;
-        const r = await fetch(`https://api.jikan.moe/v4/anime?q=${query}&limit=12`);
-        const {data} = await r.json();
-        const g = document.getElementById('grid-a'); g.innerHTML = "";
-        data.forEach(a => {
-            g.innerHTML += `
-            <div class="card" onclick="initMedia('${a.title}', 'anime', '${a.mal_id}')">
-                <img src="${a.images.jpg.large_image_url}">
-                <div class="card-info">${a.title}</div>
-            </div>`;
-        });
-    }
+        <div class="search-container">
+            <input type="text" id="global-search" class="search-input" placeholder="¿Qué quieres ver hoy?...">
+        </div>
 
-    // --- MOTOR DE BÚSQUEDA CINE (API TMDB) ---
-    async function searchC(q = "") {
-        const query = q || document.getElementById('c-in').value;
-        const endpoint = query ? `search/movie?query=${query}` : `movie/popular?`;
-        const r = await fetch(`https://api.themoviedb.org/3/${endpoint}&api_key=ace288544d732899479e96e944733e8f&language=es-MX`);
-        const {results} = await r.json();
-        const g = document.getElementById('grid-c'); g.innerHTML = "";
-        results.forEach(m => {
-            if(!m.poster_path) return;
-            g.innerHTML += `
-            <div class="card" onclick="initMedia('${m.title}', 'cine', '${m.id}')">
-                <img src="https://image.tmdb.org/t/p/w500${m.poster_path}">
-                <div class="card-info">${m.title}</div>
-            </div>`;
-        });
-    }
+        <section id="tv-section" class="content-tab active">
+            <h2 class="section-title">Canales de TV</h2>
+            <div class="grid-container" id="grid-tv">
+                </div>
+        </section>
 
-    function initMedia(t, m, id) { title = t; mode = m; idM = id; ep = 1; load(); }
+        <section id="anime-section" class="content-tab">
+            <h2 class="section-title">Anime Tendencia</h2>
+            <div class="grid-container" id="grid-anime">
+                </div>
+        </section>
 
-    // --- CARGADOR DE VIDEO (BYPASS DE WRONG FORMAT E IP NOT FOUND) ---
-    function load() {
-        hlsVid.style.display='none'; ifr.style.display='block'; pan.classList.add('active');
-        document.getElementById('ep-tag').innerText = "EPISODIO " + ep;
-        let url = "";
+        <section id="cine-section" class="content-tab">
+            <h2 class="section-title">Películas & Estrenos</h2>
+            <div class="grid-container" id="grid-cine">
+                </div>
+        </section>
 
-        if(mode === 'anime') {
-            // USAMOS LOS ÚLTIMOS MIRRORS FUNCIONALES A FEBRERO 2026
-            if(curSrv === "Desu") url = `https://vidsrc.me/embed/anime?mal=${idM}&ep=${ep}`;
-            else if(curSrv === "Magi") url = `https://vidsrc.to/embed/anime/${idM}/${ep}`;
-            else if(curSrv === "Xtreme") url = `https://embed.su/embed/anime/${idM}/${ep}`;
-            else if(curSrv === "Vidhide") url = `https://vidhide.online/v/${idM}`;
-            else if(curSrv === "Streamwish") url = `https://awish.pro/e/${idM}`;
-            else if(curSrv === "VOE") url = `https://voe.sx/e/${idM}`;
-            else url = `https://multiembed.mov/?video_id=${idM}&s=${ep}&type=anime`;
-        } else {
-            if(curSrv === "Vidsrc") url = `https://vidsrc.xyz/embed/movie?tmdb=${idM}`;
-            else if(curSrv === "EmbedSu") url = `https://embed.su/embed/movie/${idM}`;
-            else if(curSrv === "Vidhide") url = `https://vidhide.online/v/${idM}`;
-            else if(curSrv === "Cuevana") url = `https://api.cuevana.biz/embed/${idM}`;
-            else url = `https://multiembed.mov/?video_id=${idM}`;
-        }
-        ifr.src = url;
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    }
+    </main>
 
-    function setSrv(s) { curSrv = s; renderSrvs(); load(); }
-    function chEp(v) { ep += v; if(ep < 1) ep = 1; load(); }
-
-    // DIBUJAR CANALES TV
-    const drawTV = (target, data) => {
-        const g = document.getElementById(target);
-        data.forEach(c => {
-            g.innerHTML += `
-            <div class="card" style="padding:30px; text-align:center" onclick="playTV('${c.u}')">
-                <i class="fas fa-tv" style="font-size:3rem; color:var(--primary); margin-bottom:15px; display:block"></i>
-                <b>${c.n}</b>
-            </div>`;
-        });
-    }
-    drawTV('grid-tv-chi', tvDB.chi);
-    drawTV('grid-tv-dep', tvDB.dep);
-
-    // Cargar tendencias al iniciar
-    searchA(); searchC();
-</script>
+    <script src="script.js"></script>
 </body>
 </html>
