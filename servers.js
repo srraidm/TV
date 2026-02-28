@@ -1,60 +1,63 @@
-/* --- BASE DE DATOS DE SERVIDORES (MIRRORS) --- */
 const SERVERS_DB = {
-    // REPRODUCTORES DE ANIME (Basados en ID de MyAnimeList)
+    // ANIME: 15 Reproductores (Sub Español / Japonés)
     anime: (id, ep) => ({
+        "Netu (Hqq)": `https://hqq.ac/e/${id}${ep}`,
+        "Streamwish": `https://streamwish.to/e/anime-${id}-${ep}`,
+        "Voe.sx": `https://voe.sx/e/anime-${id}-${ep}`,
+        "Uqload": `https://uqload.to/embed-${id}-${ep}.html`,
+        "Sbir (Fast)": `https://sbir.to/e/${id}-${ep}`,
+        "Filemoon": `https://filemoon.sx/e/${id}${ep}`,
+        "Mixdrop": `https://mixdrop.co/e/anime-${id}-${ep}`,
+        "Vidhide": `https://vidhide.com/v/${id}${ep}`,
+        "Okru": `https://ok.ru/videoembed/${id}${ep}`,
+        "DoodStream": `https://dood.to/e/anime-${id}-${ep}`,
         "JK-Mirror 1": `https://vidsrc.cc/v2/embed/anime/${id}/${ep}`,
         "JK-Mirror 2": `https://vidsrc.xyz/embed/anime/${id}?ep=${ep}`,
         "Vidsrc.to": `https://vidsrc.to/embed/anime/${id}/${ep}`,
-        "Vidsrc.pro": `https://vidsrc.pro/embed/anime/${id}/${ep}`,
         "Embed.su": `https://embed.su/embed/anime/${id}/${ep}`,
-        "2Embed": `https://www.2embed.cc/embedanime/${id}/${ep}`,
-        "AnimeFenix": `https://multiembed.mov/?video_id=${id}&s=${ep}&type=anime`,
-        "AutoEmbed": `https://autoembed.to/anime/mal/${id}/${ep}`,
-        "Alpha-Stream": `https://vidsrc.me/embed/anime?mal=${id}&ep=${ep}`
+        "Alpha-Sub": `https://vidsrc.me/embed/anime?mal=${id}&ep=${ep}`
     }),
 
-    // REPRODUCTORES DE CINE Y SERIES (Basados en ID de TMDB)
+    // CINE: 10 Reproductores (Audio Latino / Castellano)
     cine: (id) => ({
-        "Latino 1": `https://vidsrc.cc/v2/embed/movie/${id}`,
-        "Latino 2": `https://vidsrc.xyz/embed/movie?tmdb=${id}`,
-        "Castellano": `https://embed.su/embed/movie/${id}`,
-        "Subtitulado": `https://vidsrc.to/embed/movie/${id}`,
-        "Pro-Player": `https://player.autoembed.cc/movie/${id}`,
+        "Latino Principal": `https://vidsrc.cc/v2/embed/movie/${id}`,
+        "Latino VIP": `https://vidsrc.xyz/embed/movie?tmdb=${id}`,
+        "Upstream": `https://upstream.to/embed-${id}.html`,
+        "Voe (Cine)": `https://voe.sx/e/movie-${id}`,
         "Nube": `https://nuuub.com/embed/${id}`,
-        "Multi-Mirror": `https://vidsrc.me/embed/movie?tmdb=${id}`
+        "Alpha Latino": `https://vidsrc.me/embed/movie?tmdb=${id}`,
+        "Castellano": `https://embed.su/embed/movie/${id}`,
+        "Vidjoy": `https://vidjoy.pro/embed/movie/${id}`,
+        "Pro-Player": `https://player.autoembed.cc/movie/${id}`,
+        "Mirror-X": `https://vidsrc.pro/embed/movie/${id}`
     }),
 
-    // CANALES DE TV (HLS / M3U8)
+    // TV GHOST: Iconos Rojos (TV / Balón / Música)
     tv: [
-        { 
-            n: "Canal 13", 
-            u: "https://rudo.video/live/c13", 
-            img: "https://upload.wikimedia.org/wikipedia/commons/4/40/Canal_13_Chile_logo.svg" 
-        },
-        { 
-            n: "Mega", 
-            u: "https://rudo.video/live/megatv", 
-            img: "https://upload.wikimedia.org/wikipedia/commons/2/22/Mega_logo_2020.png" 
-        },
-        { 
-            n: "CHV", 
-            u: "https://rudo.video/live/chv", 
-            img: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Chilevisi%C3%B3n_logo_2018.svg" 
-        },
-        { 
-            n: "TNT Sports", 
-            u: "https://rudo.video/live/tntsports", 
-            img: "https://logodownload.org/wp-content/uploads/2019/11/tnt-sports-logo-0.png" 
-        },
-        { 
-            n: "TVN", 
-            u: "https://rudo.video/live/tvn", 
-            img: "https://upload.wikimedia.org/wikipedia/commons/2/22/TVN_Logo.svg" 
-        },
-        { 
-            n: "CNN Chile", 
-            u: "https://rudo.video/live/cnnchile", 
-            img: "https://upload.wikimedia.org/wikipedia/commons/6/66/CNN_Chile_logo.svg" 
-        }
+        // CHILE
+        { n: "Canal 13", u: "https://rudo.video/live/c13", ico: "fa-tv" },
+        { n: "Mega", u: "https://rudo.video/live/megatv", ico: "fa-tv" },
+        { n: "CHV", u: "https://rudo.video/live/chv", ico: "fa-tv" },
+        { n: "TVN", u: "https://rudo.video/live/tvn", ico: "fa-tv" },
+        { n: "TNT Sports", u: "https://rudo.video/live/tntsports", ico: "fa-volleyball-ball" },
+        
+        // DEPORTES INTERNACIONAL
+        { n: "ESPN 1", u: "https://rudo.video/live/espn", ico: "fa-volleyball-ball" },
+        { n: "Fox Sports", u: "https://rudo.video/live/foxsports", ico: "fa-volleyball-ball" },
+        { n: "TyC Sports", u: "https://rudo.video/live/tycsports", ico: "fa-volleyball-ball" },
+        { n: "Real Madrid TV", u: "https://rmtv.secure.footprint.net/hls/rmtv_es.m3u8", ico: "fa-volleyball-ball" },
+
+        // MÚSICA (GHOST BEATS)
+        { n: "MTV Hits", u: "https://mtv.secure.footprint.net/master.m3u8", ico: "fa-music" },
+        { n: "VH1 Classic", u: "https://vh1.secure.footprint.net/master.m3u8", ico: "fa-music" },
+        { n: "Deluxe Music", u: "https://deluxemusic.secure.footprint.net/master.m3u8", ico: "fa-headphones" },
+
+        // MUNDO / NOTICIAS
+        { n: "RTVE (España)", u: "https://rtve.mdstrm.com/live-stream-playlist/58d5138136369a451e6005d5.m3u8", ico: "fa-globe" },
+        { n: "Antena 3", u: "https://antena3-live.secure.footprint.net/master.m3u8", ico: "fa-globe" },
+        { n: "Televisa (MEX)", u: "https://televisa-live.secure.footprint.net/master.m3u8", ico: "fa-globe" },
+        { n: "CNN Int", u: "https://cnn-hls.secure.footprint.net/master.m3u8", ico: "fa-newspaper" },
+        { n: "NASA TV", u: "https://ntv-live.secure.footprint.net/master.m3u8", ico: "fa-rocket" },
+        { n: "DW (Alemán)", u: "https://dwstream3-lh.akamaihd.net/i/dwstream3_live@124430/master.m3u8", ico: "fa-broadcast-tower" }
     ]
 };
