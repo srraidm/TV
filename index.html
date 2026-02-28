@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="no-referrer">
-    <title>SrRaid TVGHOST | Nexo</title>
+    <title>SrRaid TVGHOST</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=1.1">
+    <link rel="stylesheet" href="style.css">
     
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
@@ -28,16 +28,22 @@
         <div class="player-container">
             <div class="player-wrapper" id="ghost-frame">
                 <video id="hls-player" controls autoplay poster="https://wallpaperaccess.com/full/1567831.jpg"></video>
-                <iframe id="media-iframe" style="display:none;" allowfullscreen referrerpolicy="no-referrer" sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>
-            </div>
-            
-            <div id="anime-controls" class="ep-nav" style="display:none;">
-                <button class="btn-ep" onclick="changeEp(-1)"><i class="fas fa-chevron-left"></i></button>
-                <span id="ep-indicator">GHOST EP: 1</span>
-                <button class="btn-ep" onclick="changeEp(1)"><i class="fas fa-chevron-right"></i></button>
+                
+                <iframe id="media-iframe" 
+                        style="display:none;" 
+                        allowfullscreen 
+                        referrerpolicy="no-referrer" 
+                        sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation">
+                </iframe>
             </div>
             
             <div id="srv-list"></div>
+
+            <div id="anime-controls" class="ep-nav" style="display:none; justify-content: center; align-items: center; gap: 20px; margin-top: 15px;">
+                <button class="nav-btn" onclick="changeEp(-1)"><i class="fas fa-chevron-left"></i> ANTERIOR</button>
+                <span id="ep-indicator" style="font-family: 'Orbitron'; color: var(--primary); font-weight: bold;">GHOST EP: 1</span>
+                <button class="nav-btn" onclick="changeEp(1)">SIGUIENTE <i class="fas fa-chevron-right"></i></button>
+            </div>
         </div>
 
         <div id="search-area">
@@ -74,18 +80,24 @@
 
         <section id="details-view" class="content-tab">
             <div class="details-card">
-                <button onclick="backToGrid()" class="nav-btn" style="margin-bottom: 20px;">
-                    <i class="fas fa-undo"></i> VOLVER A LA GRID
+                <button onclick="backToGrid()" class="nav-btn" style="margin-bottom: 30px;">
+                    <i class="fas fa-undo"></i> VOLVER AL LISTADO
                 </button>
+                
                 <div class="details-flex">
-                    <img id="detail-img" src="">
+                    <img id="detail-img" src="" alt="Poster">
                     <div class="detail-info">
-                        <h1 id="detail-title"></h1>
+                        <h1 id="detail-title">Cargando...</h1>
                         <p id="detail-desc"></p>
                     </div>
                 </div>
-                <h3 class="ep-title">SELECCIONAR EPISODIO</h3>
-                <div id="episode-grid" class="grid-container episodes"></div>
+
+                <div style="margin-top: 40px; border-top: 1px solid #222; padding-top: 20px;">
+                    <h3 style="font-family: 'Orbitron'; letter-spacing: 2px; margin-bottom: 20px;">
+                        <i class="fas fa-list-ol" style="color: var(--primary);"></i> SELECCIONAR EPISODIO
+                    </h3>
+                    <div id="episode-grid"></div>
+                </div>
             </div>
         </section>
     </main>
