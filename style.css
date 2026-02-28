@@ -1,5 +1,5 @@
 /* =========================================
-   SRRAID TVGHOST - CORE STYLES
+   SRRAID TVGHOST - CORE STYLES 2026
    ========================================= */
 
 :root {
@@ -17,6 +17,11 @@
     box-sizing: border-box; 
 }
 
+/* Scrollbar General Estilo Ghost */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
 body { 
     background: var(--bg-black); 
     color: white; 
@@ -27,54 +32,59 @@ body {
 
 /* --- HEADER Y NAV --- */
 header { 
-    background: rgba(0,0,0,0.9); 
+    background: rgba(0,0,0,0.95); 
     padding: 20px; 
     position: sticky; 
     top: 0; 
     z-index: 2000; 
     border-bottom: 2px solid var(--primary); 
     text-align: center; 
-    backdrop-filter: blur(10px); 
+    backdrop-filter: blur(15px); 
 }
 
 .brand { 
     font-family: 'Orbitron'; 
-    font-size: 2rem; 
+    font-size: clamp(1.5rem, 5vw, 2.2rem); 
     letter-spacing: 4px; 
     margin-bottom: 15px; 
     text-transform: uppercase;
+    font-weight: 900;
 }
 
 .brand span { 
     color: var(--primary); 
-    text-shadow: 0 0 10px var(--primary); 
+    text-shadow: 0 0 15px var(--primary); 
 }
 
 nav { 
     display: flex; 
     gap: 10px; 
     justify-content: center; 
+    flex-wrap: wrap;
 }
 
 .nav-btn { 
     background: #111; 
     color: white; 
     border: 1px solid #333; 
-    padding: 10px 20px; 
+    padding: 10px 18px; 
     font-family: 'Orbitron'; 
     font-size: 0.7rem; 
     cursor: pointer; 
     transition: 0.3s; 
+    text-transform: uppercase;
 }
 
+.nav-btn:hover { border-color: var(--primary); color: var(--primary); }
 .nav-btn.active { 
     background: var(--primary); 
+    border-color: var(--primary);
     box-shadow: 0 0 15px var(--primary); 
 }
 
-/* --- REPRODUCTOR Y CONTENEDOR --- */
+/* --- REPRODUCTOR (EL NEXO) --- */
 .player-container { 
-    max-width: 1000px; 
+    max-width: 1100px; 
     margin: 20px auto; 
     padding: 0 15px;
 }
@@ -86,14 +96,16 @@ nav {
     background: #000;
     border: 2px solid #222;
     transition: var(--transition-ghost);
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    border-radius: 4px;
+    overflow: hidden; /* Vital para limpiar el iframe */
 }
 
-/* Efecto Glow cuando SrRaid-X está activo */
-.player-wrapper:has(#media-iframe[src*="jkanime"]),
+/* Efecto de encendido cuando hay señal */
+.player-wrapper:has(iframe[src*="http"]),
 .player-wrapper:hover {
     border-color: var(--primary);
-    box-shadow: 0 0 30px var(--primary-glow);
+    box-shadow: 0 0 40px var(--primary-glow);
 }
 
 #hls-player, #media-iframe {
@@ -101,119 +113,161 @@ nav {
     height: 100%;
     border: none;
     background: #000;
+    display: block;
 }
 
-/* --- FILTROS Y BUSCADOR --- */
-.search-wrapper { max-width: 600px; margin: 20px auto; padding: 0 20px; }
+/* --- BUSCADOR --- */
+.search-wrapper { max-width: 700px; margin: 30px auto; padding: 0 20px; }
 .search-input { 
     width: 100%; 
-    background: #0a0a0a; 
-    border: 2px solid #222; 
-    padding: 15px; 
+    background: #0d0d0d; 
+    border: 1px solid #222; 
+    padding: 18px; 
     color: white; 
     text-align: center; 
     font-family: 'Orbitron'; 
     outline: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: 0.3s;
 }
-.search-input:focus { border-color: var(--primary); }
+.search-input:focus { 
+    border-color: var(--primary); 
+    background: #151515;
+    box-shadow: inset 0 0 10px rgba(255,0,0,0.1);
+}
 
+/* --- FILTROS TV --- */
 .tv-filters {
-    display: flex; gap: 10px; overflow-x: auto; padding: 20px;
+    display: flex; gap: 12px; overflow-x: auto; padding: 10px 20px;
     scrollbar-width: none; justify-content: flex-start;
+    margin-bottom: 10px;
 }
 .tv-filters::-webkit-scrollbar { display: none; }
 
 .filter-btn { 
     flex-shrink: 0; 
     background: #111; 
-    color: #888; 
+    color: var(--text-dim); 
     border: 1px solid #222; 
-    padding: 8px 20px; 
-    border-radius: 20px; 
+    padding: 8px 18px; 
+    border-radius: 30px; 
     cursor: pointer; 
     font-family: 'Orbitron'; 
-    font-size: 0.65rem; 
+    font-size: 0.6rem; 
     transition: 0.3s; 
 }
 
+.filter-btn:hover { border-color: var(--primary); color: white; }
 .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-/* --- GRID DE CONTENIDO --- */
+/* --- GRIDS --- */
 .grid-container { 
     display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
-    gap: 20px; 
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+    gap: 25px; 
     padding: 20px; 
 }
 
-/* Estilo para Cards de TV */
+/* Cards TV */
 .card-tv { 
-    background: #080808; 
-    border: 1px solid #222; 
-    padding: 30px 15px; 
-    border-radius: 12px; 
+    background: linear-gradient(145deg, #0a0a0a, #050505);
+    border: 1px solid #1a1a1a; 
+    padding: 35px 15px; 
+    border-radius: 15px; 
     text-align: center; 
     cursor: pointer; 
     transition: var(--transition-ghost); 
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
+.card-tv i { font-size: 2rem; color: var(--primary); }
+.card-tv span { font-family: 'Orbitron'; font-size: 0.75rem; letter-spacing: 1px; }
+
 .card-tv:hover { 
-    transform: scale(1.05); 
+    transform: translateY(-5px); 
     border-color: var(--primary); 
-    background: #150000; 
+    background: #110000; 
+    box-shadow: 0 10px 20px rgba(255,0,0,0.1);
 }
 
-/* Estilo para Cards de Anime/Cine */
+/* Cards Anime/Cine */
 .card { 
-    background: #111; 
-    border-radius: 8px; 
+    background: var(--card-bg); 
+    border-radius: 10px; 
     overflow: hidden; 
     cursor: pointer; 
     transition: 0.3s; 
-    border: 1px solid #222; 
+    border: 1px solid #1a1a1a; 
+    position: relative;
 }
-.card:hover { transform: translateY(-10px); border-color: var(--primary); }
-.card img { width: 100%; height: 260px; object-fit: cover; }
-.card-title { padding: 10px; font-size: 0.75rem; text-align: center; font-family: 'Orbitron'; }
+.card:hover { transform: translateY(-8px); border-color: var(--primary); }
+.card img { width: 100%; height: 250px; object-fit: cover; transition: 0.5s; }
+.card:hover img { transform: scale(1.1); filter: brightness(0.6); }
+
+.card-title { 
+    padding: 12px; 
+    font-size: 0.7rem; 
+    text-align: center; 
+    font-family: 'Orbitron'; 
+    background: #000;
+}
 
 /* --- SERVIDORES Y EPISODIOS --- */
 #srv-list {
     display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
-    padding: 20px; max-height: 150px; overflow-y: auto;
+    padding: 20px;
 }
 
 .btn-srv {
-    background: #111; color: var(--text-dim); border: 1px solid #222;
-    padding: 10px 18px; font-family: 'Orbitron'; font-size: 0.65rem;
+    background: #0d0d0d; color: var(--text-dim); border: 1px solid #222;
+    padding: 12px 20px; font-family: 'Orbitron'; font-size: 0.6rem;
     cursor: pointer; transition: 0.3s; text-transform: uppercase;
 }
+.btn-srv:hover { color: white; border-color: var(--primary); }
 .btn-srv.active { 
     background: var(--primary); color: white; 
-    box-shadow: 0 0 15px var(--primary-glow); 
+    border-color: var(--primary);
+    box-shadow: 0 0 20px var(--primary-glow); 
 }
 
 #episode-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
     gap: 10px; padding: 20px 0;
 }
 
 .ep-card {
-    background: #0a0a0a; padding: 12px; text-align: center;
+    background: #080808; padding: 15px; text-align: center;
     border: 1px solid #222; cursor: pointer; font-family: 'Orbitron';
     font-size: 0.8rem; transition: 0.3s; color: var(--text-dim);
 }
 .ep-card:hover { 
-    background: var(--primary); color: white; 
-    transform: translateY(-3px); border-color: var(--primary);
+    background: #111; color: var(--primary); 
+    border-color: var(--primary);
+    transform: scale(1.1);
 }
 
 /* --- VISTA DETALLES --- */
-.details-flex { display: flex; gap: 30px; flex-wrap: wrap; margin-top: 20px; }
-#detail-img { width: 200px; border-radius: 10px; border: 2px solid #333; }
+.details-card {
+    max-width: 1000px; margin: 0 auto; padding: 20px; background: #050505;
+}
+.details-flex { display: flex; gap: 40px; flex-wrap: wrap; }
+#detail-img { width: 230px; border-radius: 12px; border: 1px solid var(--primary); box-shadow: 0 0 20px rgba(255,0,0,0.2); }
 .detail-info { flex: 1; min-width: 300px; }
+.detail-info h1 { font-family: 'Orbitron'; color: var(--primary); margin-bottom: 20px; }
+.detail-info p { font-size: 0.95rem; color: #ccc; }
 
 /* --- TABS --- */
-.content-tab { display: none; animation: fadeIn 0.5s; }
+.content-tab { display: none; animation: fadeIn 0.4s ease-out; }
 .content-tab.active { display: block; }
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Responsivo para móviles */
+@media (max-width: 768px) {
+    .grid-container { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
+    .details-flex { justify-content: center; text-align: center; }
+    #detail-img { width: 180px; }
+}
