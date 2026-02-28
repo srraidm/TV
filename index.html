@@ -4,66 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="no-referrer">
-    <title>SrRaid TVULTRA | Elite Streaming</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
-    
+    <title>SrRaid TVULTRA | Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <link rel="stylesheet" href="style.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
 
     <header>
-        <div class="brand">SrRaid <span>TVULTRA</span></div>
+        <div class="brand">SrRaid <span>TV</span></div>
         <nav>
-            <button class="nav-btn active" data-target="tv-section">
-                <i class="fas fa-tv"></i> TV EN VIVO
-            </button>
-            <button class="nav-btn" data-target="anime-section">
-                <i class="fas fa-dragon"></i> ANIME
-            </button>
-            <button class="nav-btn" data-target="cine-section">
-                <i class="fas fa-film"></i> CINE & SERIES
-            </button>
+            <button class="nav-btn active" data-target="tv-section">TV</button>
+            <button class="nav-btn" data-target="anime-section">ANIME</button>
+            <button class="nav-btn" data-target="cine-section">CINE</button>
         </nav>
     </header>
 
-    <main class="player-container">
-        <div class="player-wrapper">
-            <video id="hls-player" controls autoplay playsinline></video>
-            <iframe id="media-iframe" style="display:none" allowfullscreen 
-                sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation">
-            </iframe>
+    <main class="main-content">
+        <div class="player-container">
+            <div class="player-wrapper">
+                <video id="hls-player" controls autoplay></video>
+                <iframe id="media-iframe" style="display:none" allowfullscreen sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>
+            </div>
+            
+            <div id="anime-controls" class="ep-nav" style="display:none;">
+                <button class="btn-ep" onclick="changeEp(-1)"><i class="fas fa-step-backward"></i></button>
+                <span id="ep-indicator">EPISODIO 1</span>
+                <button class="btn-ep" onclick="changeEp(1)"><i class="fas fa-step-forward"></i></button>
+            </div>
+
+            <div id="srv-list"></div>
         </div>
 
-        <div id="srv-list">
+        <section id="details-view" class="content-tab">
+            <div class="details-card">
+                <button onclick="backToGrid()" class="nav-btn"><i class="fas fa-chevron-left"></i> Volver</button>
+                <div class="details-flex">
+                    <img id="detail-img" src="" alt="Portada">
+                    <div class="detail-info">
+                        <h1 id="detail-title"></h1>
+                        <p id="detail-desc"></p>
+                        <div id="relations-container"></div>
+                    </div>
+                </div>
+                <div id="episode-section">
+                    <h3>Lista de Episodios</h3>
+                    <div id="episode-grid" class="grid-container"></div>
+                </div>
             </div>
+        </section>
+
+        <div class="search-wrapper">
+            <input type="text" id="global-search" class="search-input" placeholder="Buscar...">
+        </div>
+
+        <section id="tv-section" class="content-tab active">
+            <div id="grid-tv" class="grid-container"></div>
+        </section>
+
+        <section id="anime-section" class="content-tab">
+            <div id="grid-anime" class="grid-container"></div>
+        </section>
+
+        <section id="cine-section" class="content-tab">
+            <div id="grid-cine" class="grid-container"></div>
+        </section>
     </main>
-
-    <div class="search-wrapper">
-        <input type="text" id="global-search" class="search-input" placeholder="Escribe el nombre y pulsa ENTER...">
-    </div>
-
-    <section id="tv-section" class="content-tab active">
-        <h2 class="section-title">Canales de Chile & Deportes</h2>
-        <div id="grid-tv" class="grid-container"></div>
-    </section>
-
-    <section id="anime-section" class="content-tab">
-        <h2 class="section-title">Resultados de Anime</h2>
-        <div id="grid-anime" class="grid-container"></div>
-    </section>
-
-    <section id="cine-section" class="content-tab">
-        <h2 class="section-title">Películas y Estrenos</h2>
-        <div id="grid-cine" class="grid-container"></div>
-    </section>
 
     <script src="servers.js"></script>
     <script src="script.js"></script>
-
 </body>
 </html>
